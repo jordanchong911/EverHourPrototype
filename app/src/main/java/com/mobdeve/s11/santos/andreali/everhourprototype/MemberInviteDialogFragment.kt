@@ -1,0 +1,57 @@
+package com.mobdeve.s11.santos.andreali.everhourprototype
+
+import android.app.Dialog
+import android.content.Context
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
+import com.google.android.material.textfield.TextInputLayout
+
+class MemberInviteDialogFragment : DialogFragment() {
+
+    interface OnMemberInviteListener {
+        fun onMemberInvited(email: String)
+    }
+
+    private var listener: OnMemberInviteListener? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        listener = context as? OnMemberInviteListener
+        if (listener == null) {
+            throw ClassCastException("$context must implement OnMemberInviteListener")
+        }
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return activity?.let {
+            val builder = AlertDialog.Builder(it)
+            val inflater = requireActivity().layoutInflater
+            val view = inflater.inflate(R.layout.member_invite_ol, null)
+
+            val tilEmail = view.findViewById<TextInputLayout>(R.id.tilEmail)
+            val editEmail = tilEmail.editText
+
+            builder.setView(view)
+                .setPositiveButton("Invite") { _, _ ->
+                    val email = editEmail?.text.toString()
+                    if (email.isNotBlank()) {
+                        listener?.onMemberInvited(email)
+                    } else {
+                        Toast.makeText(context, "Please enter an email", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                .setNegativeButton("Cancel") { dialog, _ ->
+                    dialog.cancel()
+                }
+            builder.create()
+        } ?: throw IllegalStateException("Activity cannot be null")
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        listener = null
+    }
+}

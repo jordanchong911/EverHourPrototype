@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "469318872961",
+    "firebase_url": "https://everhourprototype-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "everhourprototype",
+    "storage_bucket": "everhourprototype.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:469318872961:android:f3ac41df46130047c60280",
+        "android_client_info": {
+          "package_name": "com.mobdeve.s11.santos.andreali.everhourprototype"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_YnRC_SirT0WjJjD757gnc0ZY2o1GIVw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

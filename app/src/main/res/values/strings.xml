@@ -1,0 +1,108 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">EverHour</string>
+    <string name="app_description">A time tracking app that offers a comprehensive method for users to manage their working hours with ease and efficiency.</string>
+
+    <string name="sign_up">Sign Up</string>
+    <string name="sign_in">Sign In</string>
+
+    <string name="sign_up_prompt">Get Started with</string>
+    <string name="sign_in_prompt">Welcome Back to</string>
+    <string name="sign_up_to_in">Already have an Account ? </string>
+    <string name="sign_in_to_up">Don\'t have an Account ? </string>
+    <string name="forgot_pw_prompt">Forgot Password ?</string>
+    <string name="forgot_prompt">Forgot your Password?</string>
+    <string name="new_prompt">New Password</string>
+    <string name="forgot_subprompt">Enter your Email to Reset your Password.</string>
+    <string name="old_subprompt">Enter your Old Password.</string>
+    <string name="new_subprompt">Enter your New Password.</string>
+    <string name="reset">Reset Password</string>
+    <string name="change">Change Password</string>
+
+    <string name="f_name">First Name</string>
+    <string name="l_name">Last Name</string>
+    <string name="email">Email Address</string>
+    <string name="pw">Password</string>
+    <string name="confirm_pw">Confirm Password</string>
+
+    <string name="my_account">My Account</string>
+    <string name="hours_tracked">Hours Tracked</string>
+    <string name="tasked_completed">Tasks Completed</string>
+    <string name="dummy_name">First LastName</string>
+    <string name="dummy_email">firstlastname@gmail.com</string>
+    <string name="dummy_stat">2048</string>
+
+    <string name="general">General</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="edit_profile_desc">Change Name, Email and Profile Picture.</string>
+    <string name="change_pw_desc">Update and Strengthen Account Security.</string>
+    <string name="notifications">Notifications</string>
+    <string name="notif_desc">Customize your Notification Preferences.</string>
+    <string name="log_out">Log Out</string>
+    <string name="log_out_desc">Are you sure you want to Log Out ?</string>
+    <string name="save">Save Changes</string>
+
+    <string name="workspace">Workspaces</string>
+    <string name="create_ws">Create Workspace</string>
+    <string name="existing_ws">Existing Workspaces</string>
+    <string name="dummy_ws_name">Workspace Name</string>
+    <string name="dummy_project_name">Project Name</string>
+    <string name="dummy_client_name">Client Name</string>
+    <string name="dummy_role_ic">Role-in-charge</string>
+    <string name="dummy_role">Admin</string>
+
+    <string name="create_ws_prompt" tools:ignore="TypographyEllipsis">Creating a Workspace ...</string>
+    <string name="create_project_prompt" tools:ignore="TypographyEllipsis">Creating a Project ...</string>
+
+    <string name="overview">Overview</string>
+    <string name="tracked_hours">Tracked Hours</string>
+    <string name="project_count">Project Count</string>
+    <string name="specifics">Specifics</string>
+    <string name="members">Members</string>
+    <string name="projects">Projects</string>
+    <string name="client">Client</string>
+    <string name="role_ic">Team</string>
+    <string name="time_entries_stats">Time Entries Count</string>
+    <string name="dummy_entries_count">2048</string>
+    <string name="time_entries">Time Entries</string>
+
+    <string name="invite">Invite a new Member</string>
+    <string name="create_project">Create Project</string>
+    <string name="create_entry">Create Time Entry</string>
+    <string name="filter">Filter</string>
+
+    <string name="dummy_entry_name">Very Very Very Very Very Very Long Task Name</string>
+    <string name="dummy_time">02:13:04</string>
+    <string name="time_elapsed">Time Elapsed</string>
+    <string name="billable">Billable</string>
+    <string name="billable_hrs">Billable Hours</string>
+    <string name="total_earnings">Total Earnings</string>
+    <string name="rate">$10/hr</string>
+
+    <string name="reports">Reports</string>
+    <string name="collective_tracked">Collective Tracked Hours</string>
+    <string name="collective_billable">Collective Billable Hours</string>
+    <string name="collective_earnings">Collective Earnings</string>
+    <string name="dummy_billable">7,010.24</string>
+
+    <string name="role_options">Role Options</string>
+    <string name="role_prompt">Enter a Role</string>
+
+    <string name="workspace_name_prompt">Enter Workspace Name</string>
+    <string name="invite_members_prompt">Invite</string>
+    <string name="entry_rate">Time Entry Rate</string>
+    <string name="entry_rate_prompt">Enter Time Entry Rate</string>
+    <string name="entry_entryname_prompt">Enter Time Entry Name</string>
+
+    <string name="set">Set</string>
+    <string name="projects_details">Project Details</string>
+
+    <string name="delete_ws">Delete Workspace?</string>
+    <string name="delete_project">Delete Project?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="on">On</string>
+    <string name="off">Off</string>
+
+
+</resources>
