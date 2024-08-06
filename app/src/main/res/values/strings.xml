@@ -98,6 +98,7 @@
 
     <string name="delete_ws">Delete Workspace?</string>
     <string name="delete_project">Delete Project?</string>
+    <string name="delete_member">Delete Member?</string>
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
 

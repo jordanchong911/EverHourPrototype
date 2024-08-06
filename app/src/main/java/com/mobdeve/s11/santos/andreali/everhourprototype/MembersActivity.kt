@@ -7,19 +7,19 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 
 class MembersActivity : AppCompatActivity(),
     MemberInviteDialogFragment.OnMemberInviteListener,
-    MemberRoleDialogFragment.OnRoleSetListener {
+    MemberRoleDialogFragment.OnRoleSetListener,
+    MemberAdapter.OnRoleClickListener,
+    MemberAdapter.OnOptionsClickListener,
+    MemberDeleteDialogFragment.OnDeleteListener { // Implement OnDeleteListener
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var memberAdapter: MemberAdapter
     private lateinit var dbRef: DatabaseReference
+    private lateinit var workspaceId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,11 +28,16 @@ class MembersActivity : AppCompatActivity(),
         recyclerView = findViewById(R.id.rvMembers)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
+        // Get the workspace ID from the intent
+        workspaceId = intent.getStringExtra("WORKSPACE_ID") ?: return
+
         // Initialize Firebase reference
         dbRef = FirebaseDatabase.getInstance().getReference("members")
 
         // Initialize adapter with empty list
         memberAdapter = MemberAdapter(emptyList())
+        memberAdapter.setOnRoleClickListener(this)
+        memberAdapter.setOnOptionsClickListener(this)
         recyclerView.adapter = memberAdapter
 
         // Fetch members
@@ -45,7 +50,7 @@ class MembersActivity : AppCompatActivity(),
     }
 
     private fun fetchMembers() {
-        dbRef.addValueEventListener(object : ValueEventListener {
+        dbRef.child(workspaceId).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val membersList = mutableListOf<Member>()
                 for (memberSnapshot in snapshot.children) {
@@ -66,7 +71,7 @@ class MembersActivity : AppCompatActivity(),
     }
 
     private fun showInviteMemberDialog() {
-        val dialogFragment = MemberInviteDialogFragment()
+        val dialogFragment = MemberInviteDialogFragment.newInstance(workspaceId)
         dialogFragment.show(supportFragmentManager, "MemberInviteDialog")
     }
 
@@ -76,8 +81,31 @@ class MembersActivity : AppCompatActivity(),
     }
 
     override fun onRoleSet(email: String, role: String) {
-        val memberRef = dbRef.child(email.replace(".", ","))
-        memberRef.child("role").setValue(role)
+        val member = Member(email = email, role = role, workspaceId = workspaceId)
+        val memberRef = dbRef.child(workspaceId).child(email.replace(".", ","))
+        memberRef.setValue(member)
         Toast.makeText(this, "Role set for $email", Toast.LENGTH_SHORT).show()
     }
+
+    override fun onRoleClick(email: String, currentRole: String) {
+        val roleDialog = MemberRoleDialogFragment.newInstance(email)
+        roleDialog.show(supportFragmentManager, "MemberRoleDialog")
+    }
+
+    override fun onOptionsClick(email: String) {
+        val dialogFragment = MemberDeleteDialogFragment.newInstance(email)
+        dialogFragment.show(supportFragmentManager, "MemberDeleteDialog")
+    }
+
+    override fun onDelete(email: String) {
+        val memberRef = dbRef.child(workspaceId).child(email.replace(".", ","))
+        memberRef.removeValue().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Toast.makeText(this, "Member $email deleted", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Failed to delete member", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 }
+

@@ -26,11 +26,11 @@
         android:id="@+id/ivIllust"
         android:layout_width="250dp"
         android:layout_height="250dp"
-        android:layout_marginTop="230dp"
+        android:layout_marginTop="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvProjectCreate"
         app:srcCompat="@drawable/projectillust"
         tools:ignore="ContentDescription" />
 
@@ -38,7 +38,7 @@
         android:id="@+id/etvProjectName"
         android:layout_width="330dp"
         android:layout_height="48dp"
-        android:layout_marginTop="525dp"
+        android:layout_marginTop="15dp"
         android:background="@drawable/inputfields"
         android:ems="10"
         android:hint="@string/dummy_project_name"
@@ -52,14 +52,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivIllust"
         tools:ignore="RtlSymmetry,VisualLintOverlap" />
 
     <EditText
         android:id="@+id/etvClientName"
         android:layout_width="330dp"
         android:layout_height="48dp"
-        android:layout_marginTop="585dp"
+        android:layout_marginTop="15dp"
         android:background="@drawable/inputfields"
         android:ems="10"
         android:hint="@string/dummy_client_name"
@@ -73,14 +73,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etvProjectName"
         tools:ignore="RtlSymmetry,VisualLintOverlap" />
 
     <EditText
         android:id="@+id/etvRoleIC"
         android:layout_width="330dp"
         android:layout_height="48dp"
-        android:layout_marginTop="645dp"
+        android:layout_marginTop="15dp"
         android:background="@drawable/inputfields"
         android:ems="10"
         android:hint="@string/dummy_role_ic"
@@ -94,20 +94,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etvClientName"
         tools:ignore="RtlSymmetry,VisualLintOverlap" />
 
     <Button
         android:id="@+id/btnCreateProject"
         android:layout_width="330dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="125dp"
         android:background="@drawable/gradient"
         android:text="@string/create_project"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/lloNavbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etvRoleIC"
         tools:ignore="VisualLintButtonSize" />
 
     <LinearLayout
@@ -129,7 +129,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            app:srcCompat="@drawable/chart_line"
+            app:srcCompat="@drawable/chart_line_white"
             tools:ignore="ContentDescription" />
 
         <ImageView
@@ -147,7 +147,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            app:srcCompat="@drawable/account_outline"
+            app:srcCompat="@drawable/account_outline_white"
             tools:ignore="ContentDescription" />
     </LinearLayout>
 

@@ -26,6 +26,12 @@
             android:name=".WorkspaceActivity"
             android:exported="false" />
         <activity
+            android:name=".ProjectsActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".ProjectCreateActivity"
+            android:exported="false"/>
+        <activity
             android:name=".SignInActivity"
             android:exported="false" />
         <activity

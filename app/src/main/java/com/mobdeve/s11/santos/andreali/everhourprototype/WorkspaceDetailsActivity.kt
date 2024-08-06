@@ -6,11 +6,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.mobdeve.s11.santos.andreali.everhourprototype.databinding.WorkspaceDetailsBinding
 
 class WorkspaceDetailsActivity : AppCompatActivity(),
@@ -30,6 +26,9 @@ class WorkspaceDetailsActivity : AppCompatActivity(),
         dbRef = FirebaseDatabase.getInstance().reference
         workspaceId = intent.getStringExtra("WORKSPACE_ID") ?: return
 
+        // Save the workspace ID
+        saveWorkspaceId(workspaceId)
+
         fetchWorkspaceDetails(workspaceId)
 
         binding.ivHome.setOnClickListener {
@@ -37,12 +36,17 @@ class WorkspaceDetailsActivity : AppCompatActivity(),
         }
 
         binding.ivEdit.setOnClickListener {
-            // Create and show the dialog fragment for updating workspace name
             showUpdateWorkspaceDialog()
         }
 
         binding.btnMembers.setOnClickListener {
             checkForMembers()
+        }
+
+        binding.btnProjects.setOnClickListener {
+            val intent = Intent(this, ProjectsActivity::class.java)
+            intent.putExtra("WORKSPACE_ID", workspaceId) // Pass the workspace ID if needed
+            startActivity(intent)
         }
     }
 
@@ -77,17 +81,11 @@ class WorkspaceDetailsActivity : AppCompatActivity(),
 
         dbRef.child("members").child(workspaceId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    val memberCount = snapshot.childrenCount
-                    if (memberCount > 0) {
-                        // Navigate to MembersActivity
-                        val intent = Intent(this@WorkspaceDetailsActivity, MembersActivity::class.java)
-                        intent.putExtra("WORKSPACE_ID", workspaceId)
-                        startActivity(intent)
-                    } else {
-                        // Show invite member dialog
-                        showInviteMemberDialog()
-                    }
+                if (snapshot.exists() && snapshot.childrenCount > 0) {
+                    // Navigate to MembersActivity
+                    val intent = Intent(this@WorkspaceDetailsActivity, MembersActivity::class.java)
+                    intent.putExtra("WORKSPACE_ID", workspaceId)
+                    startActivity(intent)
                 } else {
                     // Show invite member dialog
                     showInviteMemberDialog()
@@ -111,17 +109,21 @@ class WorkspaceDetailsActivity : AppCompatActivity(),
     }
 
     override fun onRoleSet(email: String, role: String) {
-        // Handle the role assignment logic here
-        Toast.makeText(this, "Role $role set for $email", Toast.LENGTH_SHORT).show()
-        // Example: Save the email and role to the database
-        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
-        val memberData = mapOf("email" to email, "role" to role)
-        dbRef.child("members").child(workspaceId).child(userId).setValue(memberData)
-            .addOnSuccessListener {
-                Toast.makeText(this, "Role assigned successfully.", Toast.LENGTH_SHORT).show()
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Failed to assign role: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
+        val member = Member(email = email, role = role, workspaceId = workspaceId)
+        val memberRef = dbRef.child("members").child(workspaceId).child(email.replace(".", ","))
+        memberRef.setValue(member)
+        Toast.makeText(this, "Role set for $email", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun saveWorkspaceId(workspaceId: String) {
+        val sharedPreferences = getSharedPreferences("app_prefs", MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("current_workspace_id", workspaceId)
+        editor.apply()
+    }
+
+    private fun getWorkspaceId(): String? {
+        val sharedPreferences = getSharedPreferences("app_prefs", MODE_PRIVATE)
+        return sharedPreferences.getString("current_workspace_id", null)
     }
 }

@@ -59,13 +59,13 @@
         android:id="@+id/btnCreateWS"
         android:layout_width="330dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="250dp"
         android:background="@drawable/gradient"
         android:text="@string/create_ws"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/lloNavbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etvWorkspaceName"
         tools:ignore="VisualLintButtonSize" />
 
     <LinearLayout
@@ -87,7 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            app:srcCompat="@drawable/chart_line"
+            app:srcCompat="@drawable/chart_line_white"
             tools:ignore="ContentDescription" />
 
         <ImageView
@@ -105,7 +105,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            app:srcCompat="@drawable/account_outline"
+            app:srcCompat="@drawable/account_outline_white"
             tools:ignore="ContentDescription" />
     </LinearLayout>
 
