@@ -31,6 +31,8 @@
         <activity
             android:name=".ProjectCreateActivity"
             android:exported="false"/>
+        <activity android:name=".ProjectDetailsActivity"
+            android:exported="false"/>
         <activity
             android:name=".SignInActivity"
             android:exported="false" />

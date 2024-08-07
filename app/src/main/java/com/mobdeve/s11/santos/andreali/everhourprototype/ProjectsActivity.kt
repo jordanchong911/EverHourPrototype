@@ -14,6 +14,7 @@ class ProjectsActivity : AppCompatActivity() {
     private lateinit var binding: ProjectOverviewBinding
     private lateinit var dbRef: DatabaseReference
     private lateinit var workspaceId: String
+    private lateinit var projectAdapter: ProjectAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,14 +28,22 @@ class ProjectsActivity : AppCompatActivity() {
             finish()
             return
         }
-        Log.d("ProjectsActivity", "Received workspace ID: $workspaceId") // Debug log
+        Log.d("ProjectsActivity", "Received workspace ID: $workspaceId")
 
         setupRecyclerView()
         fetchProjects()
+
+        binding.btnCreateProject.setOnClickListener {
+            val intent = Intent(this, ProjectCreateActivity::class.java)
+            intent.putExtra("WORKSPACE_ID", workspaceId)
+            startActivity(intent)
+        }
     }
 
     private fun setupRecyclerView() {
+        projectAdapter = ProjectAdapter(mutableListOf(), supportFragmentManager, workspaceId, this) // Pass context here
         binding.rvProjects.layoutManager = LinearLayoutManager(this)
+        binding.rvProjects.adapter = projectAdapter
     }
 
     private fun fetchProjects() {
@@ -46,20 +55,17 @@ class ProjectsActivity : AppCompatActivity() {
                     if (project != null) {
                         projectsList.add(project)
                     } else {
-                        // Log if any project data is null
-                        Log.e("ProjectsActivity", "Null project data found")
+                        Log.e("ProjectsActivity", "Null project data found or data type mismatch")
                     }
                 }
 
                 if (projectsList.isEmpty()) {
-                    // Navigate to ProjectCreateActivity if the list is empty
                     val intent = Intent(this@ProjectsActivity, ProjectCreateActivity::class.java)
-                    intent.putExtra("WORKSPACE_ID", workspaceId) // Pass the workspace ID
+                    intent.putExtra("WORKSPACE_ID", workspaceId)
                     startActivity(intent)
-                    finish() // Optionally finish this activity
+                    finish()
                 } else {
-                    // Set the adapter to the RecyclerView
-                    binding.rvProjects.adapter = ProjectAdapter(projectsList)
+                    projectAdapter.updateProjects(projectsList)
                 }
             }
 
@@ -69,8 +75,25 @@ class ProjectsActivity : AppCompatActivity() {
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-        fetchProjects() // Refresh projects when coming back to this activity
+    private fun updateProject(project: Project, name: String, client: String, roleIC: String) {
+        val updatedProject = project.copy(name = name, client = client, roleIC = roleIC)
+
+        dbRef.child("projects").child(workspaceId).child(project.projectID).setValue(updatedProject)
+            .addOnSuccessListener {
+                Toast.makeText(this, "Project updated successfully.", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed to update project.", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun deleteProject(projectID: String) {
+        dbRef.child("projects").child(workspaceId).child(projectID).removeValue()
+            .addOnSuccessListener {
+                Toast.makeText(this, "Project deleted successfully.", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed to delete project.", Toast.LENGTH_SHORT).show()
+            }
     }
 }

@@ -1,8 +1,12 @@
 package com.mobdeve.s11.santos.andreali.everhourprototype
 
+import android.os.Parcel
+import android.os.Parcelable
+
 data class Project(
-    val id: String = "",
     val name: String = "",
-    val role: String = "",
-    val workspaceId: String = ""
+    val client: String = "",
+    val roleIC: String = "",
+    val workspaceId: String = "",
+    val projectID: String = ""
 )

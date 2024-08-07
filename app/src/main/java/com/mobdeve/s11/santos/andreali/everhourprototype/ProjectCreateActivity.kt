@@ -13,7 +13,7 @@ class ProjectCreateActivity : AppCompatActivity() {
 
     private lateinit var binding: ProjectCreateBinding
     private lateinit var dbRef: DatabaseReference
-    private lateinit var workplaceId: String
+    private lateinit var workspaceId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,21 +21,20 @@ class ProjectCreateActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         dbRef = FirebaseDatabase.getInstance().reference
-        workplaceId = intent.getStringExtra("WORKSPACE_ID") ?: run {
+        workspaceId = intent.getStringExtra("WORKSPACE_ID") ?: run {
             Log.e("ProjectCreateActivity", "Workspace ID not found in intent")
             Toast.makeText(this, "Workspace ID missing", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
-        Log.d("ProjectCreateActivity", "Received workspace ID: $workplaceId") // Debug log
+        Log.d("ProjectCreateActivity", "Received workspace ID: $workspaceId")
 
         binding.btnCreateProject.setOnClickListener {
             createProject()
         }
 
         binding.ivHome.setOnClickListener {
-            // Navigate back to the previous activity
-            finish() // This just finishes the current activity
+            finish()
         }
     }
 
@@ -44,33 +43,29 @@ class ProjectCreateActivity : AppCompatActivity() {
         val clientName = binding.etvClientName.text.toString().trim()
         val roleIC = binding.etvRoleIC.text.toString().trim()
 
-        Log.d("ProjectCreateActivity", "Create Project clicked: $projectName, $clientName, $roleIC")
-
         if (projectName.isEmpty() || clientName.isEmpty() || roleIC.isEmpty()) {
             Toast.makeText(this, "Please fill all fields.", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val newProjectRef = dbRef.child("projects").child(workplaceId).push()
-        val project = mapOf(
-            "name" to projectName,
-            "client" to clientName,
-            "roleIC" to roleIC
+        val newProjectRef = dbRef.child("projects").child(workspaceId).push()
+        val project = Project(
+            name = projectName,
+            client = clientName,
+            roleIC = roleIC,
+            workspaceId = workspaceId,
+            projectID = newProjectRef.key ?: ""
         )
 
         newProjectRef.setValue(project)
             .addOnSuccessListener {
-                Log.d("ProjectCreateActivity", "Project created successfully.")
                 Toast.makeText(this, "Project created successfully.", Toast.LENGTH_SHORT).show()
-
-                // Redirect to ProjectsActivity after creating the project
                 val intent = Intent(this, ProjectsActivity::class.java)
-                intent.putExtra("WORKSPACE_ID", workplaceId) // Pass the workspace ID
+                intent.putExtra("WORKSPACE_ID", workspaceId)
                 startActivity(intent)
-                finish() // Optionally finish this activity
+                finish()
             }
             .addOnFailureListener { e ->
-                Log.e("ProjectCreateActivity", "Failed to create project: ${e.message}")
                 Toast.makeText(this, "Failed to create project: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
