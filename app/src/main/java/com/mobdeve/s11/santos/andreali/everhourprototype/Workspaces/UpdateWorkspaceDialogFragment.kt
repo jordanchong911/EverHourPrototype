@@ -2,8 +2,6 @@ package com.mobdeve.s11.santos.andreali.everhourprototype
 
 import android.app.Dialog
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
@@ -42,19 +40,20 @@ class UpdateWorkspaceDialogFragment(
     }
 
     private fun updateWorkspaceName(newName: String) {
-        if (isAdded && context != null) { // Ensure the fragment is added and context is not null
-            dbRef.child("workspaces").child(FirebaseAuth.getInstance().currentUser?.uid ?: "").child(workspaceId)
-                .child("name").setValue(newName)
-                .addOnSuccessListener {
-                    Toast.makeText(requireContext(), "Workspace name updated.", Toast.LENGTH_SHORT).show()
-                    // Notify the activity to refresh the workspace details
-                    (requireActivity() as? WorkspaceDetailsActivity)?.fetchWorkspaceDetails(workspaceId)
-                }
-                .addOnFailureListener { e ->
-                    Toast.makeText(requireContext(), "Failed to update workspace name: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
-        } else {
-            Toast.makeText(requireContext(), "Fragment or context not available. Unable to update workspace name.", Toast.LENGTH_SHORT).show()
-        }
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        dbRef.child("workspaces").child(userId).child(workspaceId).child("name").setValue(newName)
+            .addOnSuccessListener {
+                Toast.makeText(requireContext(), "Workspace name updated.", Toast.LENGTH_SHORT).show()
+                // Notify the activity to refresh the workspace details if needed
+                (targetFragment as? OnWorkspaceUpdatedListener)?.onWorkspaceUpdated()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(requireContext(), "Failed to update workspace name: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    // Interface for notifying the activity
+    interface OnWorkspaceUpdatedListener {
+        fun onWorkspaceUpdated()
     }
 }

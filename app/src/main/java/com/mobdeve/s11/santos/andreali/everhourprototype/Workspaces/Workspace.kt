@@ -1,3 +1,5 @@
+package com.mobdeve.s11.santos.andreali.everhourprototype
+
 data class Workspace(
     val id: String = "",
     val name: String = "",

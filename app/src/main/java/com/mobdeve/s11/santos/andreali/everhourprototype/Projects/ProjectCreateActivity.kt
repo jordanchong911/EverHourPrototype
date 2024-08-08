@@ -59,7 +59,10 @@ class ProjectCreateActivity : AppCompatActivity() {
             return
         }
 
-        val newProjectRef = dbRef.child("projects").child(workspaceId).push()
+        // Reference to the Firebase path
+        val newProjectRef = dbRef.child("workspaces").child(workspaceId).child("projects").push()
+
+        // Create a Project object
         val project = Project(
             name = projectName,
             client = clientName,
@@ -68,6 +71,7 @@ class ProjectCreateActivity : AppCompatActivity() {
             projectID = newProjectRef.key ?: ""
         )
 
+        // Save project to Firebase
         newProjectRef.setValue(project)
             .addOnSuccessListener {
                 Toast.makeText(this, "Project created successfully.", Toast.LENGTH_SHORT).show()
@@ -78,6 +82,7 @@ class ProjectCreateActivity : AppCompatActivity() {
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Failed to create project: ${e.message}", Toast.LENGTH_SHORT).show()
+                Log.e("ProjectCreateActivity", "Error creating project", e)
             }
     }
 }

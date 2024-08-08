@@ -40,7 +40,7 @@ class MemberDeleteDialogFragment : DialogFragment() {
 
         // Inflate the custom layout
         val inflater = requireActivity().layoutInflater
-        val view = inflater.inflate(R.layout.member_delete, null)
+        val view = inflater.inflate(R.layout.member_delete_ol, null)
 
         // Set up the dialog builder
         return AlertDialog.Builder(requireActivity())

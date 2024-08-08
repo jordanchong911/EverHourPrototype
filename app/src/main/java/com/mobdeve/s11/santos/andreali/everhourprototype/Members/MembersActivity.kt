@@ -15,7 +15,7 @@ class MembersActivity : AppCompatActivity(),
     MemberRoleDialogFragment.OnRoleSetListener,
     MemberAdapter.OnRoleClickListener,
     MemberAdapter.OnOptionsClickListener,
-    MemberDeleteDialogFragment.OnDeleteListener { // Implement OnDeleteListener
+    MemberDeleteDialogFragment.OnDeleteListener {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var memberAdapter: MemberAdapter
@@ -33,12 +33,10 @@ class MembersActivity : AppCompatActivity(),
         workspaceId = intent.getStringExtra("WORKSPACE_ID") ?: return
 
         // Initialize Firebase reference
-        dbRef = FirebaseDatabase.getInstance().getReference("members")
+        dbRef = FirebaseDatabase.getInstance().getReference("workspaces").child(workspaceId).child("members")
 
         // Initialize adapter with empty list
-        memberAdapter = MemberAdapter(emptyList())
-        memberAdapter.setOnRoleClickListener(this)
-        memberAdapter.setOnOptionsClickListener(this)
+        memberAdapter = MemberAdapter(this, this)
         recyclerView.adapter = memberAdapter
 
         // Fetch members
@@ -66,7 +64,7 @@ class MembersActivity : AppCompatActivity(),
     }
 
     private fun fetchMembers() {
-        dbRef.child(workspaceId).addValueEventListener(object : ValueEventListener {
+        dbRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val membersList = mutableListOf<Member>()
                 for (memberSnapshot in snapshot.children) {
@@ -77,7 +75,7 @@ class MembersActivity : AppCompatActivity(),
                 }
                 Log.d("MembersActivity", "Fetched members: $membersList")
                 // Update RecyclerView with the new list
-                memberAdapter.updateMembers(membersList)
+                memberAdapter.submitList(membersList)
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -98,7 +96,7 @@ class MembersActivity : AppCompatActivity(),
 
     override fun onRoleSet(email: String, role: String) {
         val member = Member(email = email, role = role, workspaceId = workspaceId)
-        val memberRef = dbRef.child(workspaceId).child(email.replace(".", ","))
+        val memberRef = dbRef.child(email.replace(".", ","))
         memberRef.setValue(member)
         Toast.makeText(this, "Role set for $email", Toast.LENGTH_SHORT).show()
     }
@@ -114,7 +112,7 @@ class MembersActivity : AppCompatActivity(),
     }
 
     override fun onDelete(email: String) {
-        val memberRef = dbRef.child(workspaceId).child(email.replace(".", ","))
+        val memberRef = dbRef.child(email.replace(".", ","))
         memberRef.removeValue().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 Toast.makeText(this, "Member $email deleted", Toast.LENGTH_SHORT).show()
@@ -124,4 +122,3 @@ class MembersActivity : AppCompatActivity(),
         }
     }
 }
-

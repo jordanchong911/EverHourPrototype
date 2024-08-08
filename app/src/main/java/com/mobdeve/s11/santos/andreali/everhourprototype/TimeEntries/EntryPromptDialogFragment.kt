@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.textfield.TextInputLayout
 
 class EntryPromptDialogFragment : DialogFragment() {
 
@@ -16,12 +15,6 @@ class EntryPromptDialogFragment : DialogFragment() {
 
     fun setOnNameEnteredListener(listener: (String) -> Unit) {
         this.listener = listener
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return super.onCreateDialog(savedInstanceState).apply {
-            setTitle("Enter Time Entry Name")
-        }
     }
 
     override fun onCreateView(

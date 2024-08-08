@@ -1,21 +1,22 @@
 package com.mobdeve.s11.santos.andreali.everhourprototype
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.mobdeve.s11.santos.andreali.everhourprototype.Member
 import com.mobdeve.s11.santos.andreali.everhourprototype.databinding.MemberCardBinding
 
-class MemberAdapter(private var members: List<Member>) : RecyclerView.Adapter<MemberAdapter.MemberViewHolder>() {
-
-    private var onRoleClickListener: OnRoleClickListener? = null
-    private var onOptionsClickListener: OnOptionsClickListener? = null
+class MemberAdapter(
+    private val onRoleClickListener: OnRoleClickListener?,
+    private val onOptionsClickListener: OnOptionsClickListener?
+) : ListAdapter<Member, MemberAdapter.MemberViewHolder>(MemberDiffCallback()) {
 
     inner class MemberViewHolder(private val binding: MemberCardBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(member: Member) {
             binding.tvUsername.text = member.email
             binding.tvRole.text = member.role
-            Log.d("MemberAdapter", "Name: ${member.email}, Role: ${member.role}")
 
             // Set up click listener for role TextView
             binding.tvRole.setOnClickListener {
@@ -35,22 +36,7 @@ class MemberAdapter(private var members: List<Member>) : RecyclerView.Adapter<Me
     }
 
     override fun onBindViewHolder(holder: MemberViewHolder, position: Int) {
-        holder.bind(members[position])
-    }
-
-    override fun getItemCount(): Int = members.size
-
-    fun updateMembers(newMembers: List<Member>) {
-        members = newMembers
-        notifyDataSetChanged()
-    }
-
-    fun setOnRoleClickListener(listener: OnRoleClickListener) {
-        onRoleClickListener = listener
-    }
-
-    fun setOnOptionsClickListener(listener: OnOptionsClickListener) {
-        onOptionsClickListener = listener
+        holder.bind(getItem(position))
     }
 
     interface OnRoleClickListener {
@@ -59,5 +45,15 @@ class MemberAdapter(private var members: List<Member>) : RecyclerView.Adapter<Me
 
     interface OnOptionsClickListener {
         fun onOptionsClick(email: String)
+    }
+}
+
+class MemberDiffCallback : DiffUtil.ItemCallback<Member>() {
+    override fun areItemsTheSame(oldItem: Member, newItem: Member): Boolean {
+        return oldItem.email == newItem.email
+    }
+
+    override fun areContentsTheSame(oldItem: Member, newItem: Member): Boolean {
+        return oldItem == newItem
     }
 }

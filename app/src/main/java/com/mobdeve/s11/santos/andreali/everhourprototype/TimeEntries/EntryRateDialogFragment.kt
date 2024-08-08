@@ -19,19 +19,12 @@ class EntryRateDialogFragment : DialogFragment() {
         this.listener = listener
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return super.onCreateDialog(savedInstanceState).apply {
-            setTitle("Enter Time Entry Rate")
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.entry_rate_ol, container, false)
 
-        val tilRate = view.findViewById<TextInputLayout>(R.id.tilRate)
         val editRate = view.findViewById<TextInputEditText>(R.id.etRate)
         val setButton = view.findViewById<MaterialButton>(R.id.btnSetWorkSpName)
 
