@@ -7,6 +7,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.mobdeve.s11.santos.andreali.everhourprototype.Projects.ProjectsActivity
+import com.mobdeve.s11.santos.andreali.everhourprototype.Workspaces.WorkspaceActivity
 import com.mobdeve.s11.santos.andreali.everhourprototype.databinding.WorkspaceDetailsBinding
 
 class WorkspaceDetailsActivity : AppCompatActivity(),

@@ -1,4 +1,4 @@
-package com.mobdeve.s11.santos.andreali.everhourprototype
+package com.mobdeve.s11.santos.andreali.everhourprototype.Workspaces
 
 import Workspace
 import android.content.Intent
@@ -13,6 +13,10 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.mobdeve.s11.santos.andreali.everhourprototype.databinding.WorkspaceOverviewBinding
+import com.mobdeve.s11.santos.andreali.everhourprototype.AccountActivity
+import com.mobdeve.s11.santos.andreali.everhourprototype.WorkspaceAdapter
+import com.mobdeve.s11.santos.andreali.everhourprototype.WorkspaceCreateActivity
+import com.mobdeve.s11.santos.andreali.everhourprototype.WorkspaceDetailsActivity
 
 class WorkspaceActivity : AppCompatActivity() {
 
@@ -52,7 +56,7 @@ class WorkspaceActivity : AppCompatActivity() {
             // already here
         }
         binding.ivReport.setOnClickListener{
-
+            //TODO: place report activity here
         }
         binding.ivAccount.setOnClickListener{
             val intent = Intent(this, AccountActivity::class.java)

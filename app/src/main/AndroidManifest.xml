@@ -23,10 +23,10 @@
             android:name=".WorkspaceCreateActivity"
             android:exported="false"/>
         <activity
-            android:name=".WorkspaceActivity"
+            android:name=".Workspaces.WorkspaceActivity"
             android:exported="false" />
         <activity
-            android:name=".ProjectsActivity"
+            android:name=".Projects.ProjectsActivity"
             android:exported="false"/>
         <activity
             android:name=".ProjectCreateActivity"
