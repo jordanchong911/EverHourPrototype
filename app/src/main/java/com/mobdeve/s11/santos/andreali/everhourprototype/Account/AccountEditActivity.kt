@@ -89,7 +89,7 @@ class AccountEditActivity : AppCompatActivity() {
             finish()
         }
         binding.ivReport.setOnClickListener{
-
+            //TODO: place report activity here
         }
         binding.ivAccount.setOnClickListener{
             val intent = Intent(this, AccountActivity::class.java)

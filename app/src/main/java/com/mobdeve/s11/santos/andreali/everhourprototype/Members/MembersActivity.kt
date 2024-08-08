@@ -1,5 +1,6 @@
 package com.mobdeve.s11.santos.andreali.everhourprototype
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -46,6 +47,21 @@ class MembersActivity : AppCompatActivity(),
         // Setup invite button click listener
         findViewById<Button>(R.id.btnInvite).setOnClickListener {
             showInviteMemberDialog()
+        }
+
+        // Navbar Buttons
+        findViewById<Button>(R.id.ivHome).setOnClickListener {
+            val intent = Intent(this, WorkspaceActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+        findViewById<Button>(R.id.ivReport).setOnClickListener{
+            //TODO: place report activity here
+        }
+        findViewById<Button>(R.id.ivAccount).setOnClickListener{
+            val intent = Intent(this, AccountActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 

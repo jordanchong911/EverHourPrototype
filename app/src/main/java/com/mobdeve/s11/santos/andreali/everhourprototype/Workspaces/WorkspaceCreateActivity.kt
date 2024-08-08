@@ -1,6 +1,7 @@
 package com.mobdeve.s11.santos.andreali.everhourprototype
 
 import Workspace
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -47,6 +48,21 @@ class WorkspaceCreateActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "Please enter a workspace name.", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        // Navbar Buttons
+        binding.ivHome.setOnClickListener {
+            val intent = Intent(this, WorkspaceActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+        binding.ivReport.setOnClickListener{
+            //TODO: place report activity here
+        }
+        binding.ivAccount.setOnClickListener{
+            val intent = Intent(this, AccountActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 }
