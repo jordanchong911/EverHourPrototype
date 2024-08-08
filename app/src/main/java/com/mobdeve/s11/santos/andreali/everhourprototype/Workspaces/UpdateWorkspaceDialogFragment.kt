@@ -23,7 +23,7 @@ class UpdateWorkspaceDialogFragment(
         val dialogView = requireActivity().layoutInflater.inflate(R.layout.workspace_update_ol, null)
         dbRef = FirebaseDatabase.getInstance().reference
 
-        val editText = dialogView.findViewById<TextInputEditText>(R.id.editWorkspace)
+        val editText = dialogView.findViewById<TextInputEditText>(R.id.etWorkspaceName)
         editText.setText(currentName) // Set the current name in the EditText
 
         return AlertDialog.Builder(requireActivity())

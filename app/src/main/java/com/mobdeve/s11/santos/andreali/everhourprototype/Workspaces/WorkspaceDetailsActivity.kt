@@ -45,7 +45,8 @@ class WorkspaceDetailsActivity : AppCompatActivity(),
 
         binding.btnProjects.setOnClickListener {
             val intent = Intent(this, ProjectsActivity::class.java)
-            intent.putExtra("WORKSPACE_ID", workspaceId) // Pass the workspace ID if needed
+            intent.putExtra("WORKSPACE_ID", workspaceId) // Pass the workspace ID
+            intent.putExtra("WORKSPACE_NAME", currentName) // Pass the workspace name
             startActivity(intent)
         }
     }

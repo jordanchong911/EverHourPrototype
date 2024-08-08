@@ -36,6 +36,7 @@ class ProjectAdapter(
         fun bind(project: Project) {
             binding.apply {
                 tvProjectName.text = project.name
+                tvRoleIC.text = project.roleIC
                 ivDots.setOnClickListener {
                     showOptionsDialog(project)
                 }

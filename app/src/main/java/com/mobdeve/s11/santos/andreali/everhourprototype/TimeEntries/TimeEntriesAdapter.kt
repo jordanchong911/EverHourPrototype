@@ -24,8 +24,10 @@ class TimeEntriesAdapter(
     inner class TimeEntryViewHolder(private val binding: EntryCardBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(timeEntry: TimeEntry) {
             binding.tvEntryName.text = timeEntry.name
-//            binding.tvEntryTime.text = timeEntry.time
-            // Bind other fields as necessary
+            binding.tvTime.text = timeEntry.timeElapsed
+//            binding.tvRole.text =
+//            binding.cbBillable =  put logic here
+            binding.tvRate.text = timeEntry.rate.toString()
         }
     }
 

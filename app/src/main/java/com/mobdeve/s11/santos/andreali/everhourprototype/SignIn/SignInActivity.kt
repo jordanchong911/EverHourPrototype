@@ -19,11 +19,6 @@ class SignInActivity : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
 
-        // Check if user is already logged in
-        if (auth.currentUser != null) {
-            navigateToWorkplace()
-        }
-
         binding.btnSignInMain.setOnClickListener {
             val email = binding.etvSIEmail.text.toString()
             val password = binding.etvSIPassword.text.toString()
@@ -35,7 +30,9 @@ class SignInActivity : AppCompatActivity() {
                 auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show()
-                        navigateToWorkplace()
+                        val intent = Intent(this, WorkspaceActivity::class.java)
+                        startActivity(intent)
+                        finish()
                     } else {
                         Toast.makeText(this, "Authentication failed: ${task.exception?.message} !", Toast.LENGTH_SHORT).show()
                     }
@@ -46,12 +43,7 @@ class SignInActivity : AppCompatActivity() {
         binding.lloPrompt.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
+            finish()
         }
-    }
-
-    private fun navigateToWorkplace() {
-        val intent = Intent(this, WorkspaceActivity::class.java)
-        startActivity(intent)
-        finish() // Call finish to remove this activity from the back stack
     }
 }

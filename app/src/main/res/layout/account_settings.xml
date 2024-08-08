@@ -384,7 +384,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            app:srcCompat="@drawable/chart_line"
+            app:srcCompat="@drawable/chart_line_white"
             tools:ignore="ContentDescription" />
 
         <ImageView
@@ -393,7 +393,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            app:srcCompat="@drawable/home_outline"
+            app:srcCompat="@drawable/home_outline_white"
             tools:ignore="ContentDescription" />
 
         <ImageView

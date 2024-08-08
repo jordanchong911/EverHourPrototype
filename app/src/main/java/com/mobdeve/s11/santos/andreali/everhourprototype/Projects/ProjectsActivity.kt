@@ -14,6 +14,7 @@ class ProjectsActivity : AppCompatActivity() {
     private lateinit var binding: ProjectOverviewBinding
     private lateinit var dbRef: DatabaseReference
     private lateinit var workspaceId: String
+    private lateinit var workspaceName: String
     private lateinit var projectAdapter: ProjectAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,13 +23,25 @@ class ProjectsActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         dbRef = FirebaseDatabase.getInstance().reference
+
+        // Get workspace ID and name from the intent
         workspaceId = intent.getStringExtra("WORKSPACE_ID") ?: run {
             Log.e("ProjectsActivity", "Workspace ID not found in intent")
             Toast.makeText(this, "Workspace ID missing", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
+
+        workspaceName = intent.getStringExtra("WORKSPACE_NAME") ?: run {
+            Log.e("ProjectsActivity", "Workspace name not found in intent")
+            Toast.makeText(this, "Workspace name missing", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
         Log.d("ProjectsActivity", "Received workspace ID: $workspaceId")
+        Log.d("ProjectsActivity", "Received workspace name: $workspaceName")
+
+        binding.tvProjectOv.text = workspaceName
 
         setupRecyclerView()
         fetchProjects()

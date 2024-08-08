@@ -69,12 +69,12 @@
         android:id="@+id/lloButtons"
         android:layout_width="330dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="650dp"
         android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/lloNavbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/cloTimer">
 
         <ImageButton
             android:id="@+id/ibPausePlay"
@@ -132,7 +132,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            app:srcCompat="@drawable/chart_line"
+            app:srcCompat="@drawable/chart_line_white"
             tools:ignore="ContentDescription" />
 
         <ImageView
@@ -150,7 +150,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            app:srcCompat="@drawable/account_outline"
+            app:srcCompat="@drawable/account_outline_white"
             tools:ignore="ContentDescription" />
     </LinearLayout>
 

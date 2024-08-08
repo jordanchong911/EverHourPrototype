@@ -58,6 +58,7 @@ class SignUpActivity : AppCompatActivity() {
 
                                 val intent = Intent(this, SignInActivity::class.java)
                                 startActivity(intent)
+                                finish()
                             } else {
                                 Toast.makeText(this, "Registration failed: ${task.exception?.message} !", Toast.LENGTH_SHORT).show()
                             }
@@ -72,6 +73,7 @@ class SignUpActivity : AppCompatActivity() {
         binding.lloPrompt.setOnClickListener {
             val intent = Intent(this, SignInActivity::class.java)
             startActivity(intent)
+            finish()
         }
     }
 }

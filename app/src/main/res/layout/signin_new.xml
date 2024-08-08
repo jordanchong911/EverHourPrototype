@@ -107,13 +107,13 @@
         android:id="@+id/btnNewPW"
         android:layout_width="330dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="175dp"
+        android:layout_marginTop="15dp"
         android:background="@drawable/gradient"
         android:text="@string/change"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etvSINConfirmPassword"
         tools:ignore="VisualLintButtonSize" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -86,15 +86,15 @@
         android:id="@+id/btnResetPW"
         android:layout_width="330dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="200dp"
+        android:layout_marginTop="25dp"
         android:background="@drawable/gradient"
         android:text="@string/reset"
         android:textColor="@color/white"
         android:textStyle="italic"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etvSIFEmail"
         tools:ignore="VisualLintButtonSize" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

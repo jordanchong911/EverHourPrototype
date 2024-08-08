@@ -25,7 +25,7 @@ class ProjectUpdateDialogFragment(
             tilClient.editText?.setText(project.client)
             tilTeam.editText?.setText(project.roleIC)
 
-            btnSet.setOnClickListener {
+            btnSetWorkSpName.setOnClickListener {
                 val updatedProject = project.copy(
                     name = tilName.editText?.text.toString(),
                     client = tilClient.editText?.text.toString(),

@@ -27,7 +27,6 @@ class TimeEntriesActivity : AppCompatActivity() {
             finish()
             return
         }
-        Log.d("TimeEntriesActivity", "Received project ID: $projectId")
 
         setupRecyclerView()
         fetchTimeEntries()
@@ -47,11 +46,8 @@ class TimeEntriesActivity : AppCompatActivity() {
                     val timeEntry = timeEntrySnapshot.getValue(TimeEntry::class.java)
                     if (timeEntry != null) {
                         timeEntriesList.add(timeEntry)
-                    } else {
-                        Log.e("TimeEntriesActivity", "Null time entry data found or data type mismatch")
                     }
                 }
-
                 timeEntriesAdapter.updateTimeEntries(timeEntriesList)
             }
 

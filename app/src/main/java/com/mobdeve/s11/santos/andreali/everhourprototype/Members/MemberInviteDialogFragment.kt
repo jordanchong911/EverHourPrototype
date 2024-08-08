@@ -3,28 +3,27 @@ package com.mobdeve.s11.santos.andreali.everhourprototype
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
-class MemberRoleDialogFragment : DialogFragment() {
+class MemberInviteDialogFragment : DialogFragment() {
 
-    interface OnRoleSetListener {
-        fun onRoleSet(email: String, role: String)
+    interface OnMemberInviteListener {
+        fun onMemberInvited(email: String)
     }
 
-    private var listener: OnRoleSetListener? = null
+    private var listener: OnMemberInviteListener? = null
 
     companion object {
-        private const val ARG_EMAIL = "email"
+        private const val ARG_WORKSPACE_ID = "workspace_id"
 
-        fun newInstance(email: String): MemberRoleDialogFragment {
-            val fragment = MemberRoleDialogFragment()
+        fun newInstance(workspaceId: String): MemberInviteDialogFragment {
+            val fragment = MemberInviteDialogFragment()
             val args = Bundle()
-            args.putString(ARG_EMAIL, email)
+            args.putString(ARG_WORKSPACE_ID, workspaceId)
             fragment.arguments = args
             return fragment
         }
@@ -32,30 +31,30 @@ class MemberRoleDialogFragment : DialogFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        listener = context as? OnRoleSetListener
+        listener = context as? OnMemberInviteListener
         if (listener == null) {
-            throw ClassCastException("$context must implement OnRoleSetListener")
+            throw ClassCastException("$context must implement OnMemberInviteListener")
         }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val email = arguments?.getString(ARG_EMAIL) ?: ""
+        val workspaceId = arguments?.getString(ARG_WORKSPACE_ID) ?: ""
 
         return activity?.let {
             val builder = AlertDialog.Builder(it)
             val inflater = requireActivity().layoutInflater
-            val view = inflater.inflate(R.layout.member_role_ol, null)
+            val view = inflater.inflate(R.layout.member_invite_ol, null)
 
-            val tilRole = view.findViewById<TextInputLayout>(R.id.tilRole)
-            val editRole = view.findViewById<TextInputEditText>(R.id.editRole)
+            val tilEmail = view.findViewById<TextInputLayout>(R.id.tilEmail)
+            val editEmail = view.findViewById<TextInputEditText>(R.id.etInvEmail)
 
             builder.setView(view)
-                .setPositiveButton("Set Role") { _, _ ->
-                    val role = editRole.text.toString()
-                    if (role.isNotBlank()) {
-                        listener?.onRoleSet(email, role)
+                .setPositiveButton("Invite") { _, _ ->
+                    val email = editEmail.text.toString()
+                    if (email.isNotBlank()) {
+                        listener?.onMemberInvited(email)
                     } else {
-                        Toast.makeText(context, "Please enter a role", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Please enter an email", Toast.LENGTH_SHORT).show()
                     }
                 }
                 .setNegativeButton("Cancel") { dialog, _ ->
@@ -70,3 +69,4 @@ class MemberRoleDialogFragment : DialogFragment() {
         listener = null
     }
 }
+
