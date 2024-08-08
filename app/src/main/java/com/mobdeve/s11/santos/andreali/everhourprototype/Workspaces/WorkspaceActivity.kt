@@ -10,6 +10,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.mobdeve.s11.santos.andreali.everhourprototype.databinding.WorkspaceOverviewBinding
 import com.mobdeve.s11.santos.andreali.everhourprototype.AccountActivity
+import com.mobdeve.s11.santos.andreali.everhourprototype.Workspace
 import com.mobdeve.s11.santos.andreali.everhourprototype.WorkspaceAdapter
 import com.mobdeve.s11.santos.andreali.everhourprototype.WorkspaceCreateActivity
 import com.mobdeve.s11.santos.andreali.everhourprototype.WorkspaceDetailsActivity
