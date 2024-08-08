@@ -2,6 +2,7 @@ package com.mobdeve.s11.santos.andreali.everhourprototype
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.DatabaseReference
@@ -57,7 +58,7 @@ class ProjectDetailsActivity : AppCompatActivity() {
     }
 
     private fun fetchProjectDetails() {
-        dbRef.child("projects").child(workspaceId).child(projectId).addListenerForSingleValueEvent(object : ValueEventListener {
+        dbRef.child("workspaces").child(workspaceId).child("projects").child(projectId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val project = snapshot.getValue(Project::class.java)
                 if (project != null) {
@@ -81,11 +82,15 @@ class ProjectDetailsActivity : AppCompatActivity() {
     }
 
     private fun checkTimeEntries() {
-        dbRef.child("time_entries").child(projectId).addListenerForSingleValueEvent(object : ValueEventListener {
+        dbRef.child("workspaces").child(workspaceId).child("projects").child(projectId).child("time_entries").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
-                    val intent = Intent(this@ProjectDetailsActivity, TimeEntriesActivity::class.java)
-                    intent.putExtra("PROJECT_ID", projectId)
+                    // Time entries exist, launch TimeEntriesActivity
+                    val intent = Intent(this@ProjectDetailsActivity, TimeEntriesActivity::class.java).apply {
+                        putExtra("PROJECT_ID", projectId)
+                        putExtra("WORKSPACE_ID", workspaceId) // Pass workspaceId here
+                        putExtra("PROJECT_NAME", binding.tvProjectDetails.text.toString()) // Pass project name
+                    }
                     startActivity(intent)
                 } else {
                     // No time entries, show the entry prompt dialog
@@ -116,7 +121,7 @@ class ProjectDetailsActivity : AppCompatActivity() {
     }
 
     private fun saveTimeEntry(entryName: String, entryRate: Int) {
-        val timeEntryID = dbRef.child("time_entries").child(projectId).push().key ?: return
+        val timeEntryID = dbRef.child("workspaces").child(workspaceId).child("projects").child(projectId).child("time_entries").push().key ?: return
         val timeEntry = TimeEntry(
             workplaceID = workspaceId,
             projectID = projectId,
@@ -125,7 +130,7 @@ class ProjectDetailsActivity : AppCompatActivity() {
             timeElapsed = "00:00:00", // Default start time
             rate = entryRate
         )
-        dbRef.child("time_entries").child(projectId).child(timeEntryID).setValue(timeEntry)
+        dbRef.child("workspaces").child(workspaceId).child("projects").child(projectId).child("time_entries").child(timeEntryID).setValue(timeEntry)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(this, "Time entry added successfully", Toast.LENGTH_SHORT).show()

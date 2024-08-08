@@ -3,6 +3,7 @@ package com.mobdeve.s11.santos.andreali.everhourprototype
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
@@ -47,19 +48,20 @@ class MemberInviteDialogFragment : DialogFragment() {
 
             val tilEmail = view.findViewById<TextInputLayout>(R.id.tilEmail)
             val editEmail = view.findViewById<TextInputEditText>(R.id.etInvEmail)
+            val btnInvite = view.findViewById<Button>(R.id.btnInvite)
+
+            // Handle button click
+            btnInvite.setOnClickListener {
+                val email = editEmail.text.toString()
+                if (email.isNotBlank()) {
+                    listener?.onMemberInvited(email)
+                    dismiss() // Dismiss the dialog after inviting
+                } else {
+                    Toast.makeText(context, "Please enter an email", Toast.LENGTH_SHORT).show()
+                }
+            }
 
             builder.setView(view)
-                .setPositiveButton("Invite") { _, _ ->
-                    val email = editEmail.text.toString()
-                    if (email.isNotBlank()) {
-                        listener?.onMemberInvited(email)
-                    } else {
-                        Toast.makeText(context, "Please enter an email", Toast.LENGTH_SHORT).show()
-                    }
-                }
-                .setNegativeButton("Cancel") { dialog, _ ->
-                    dialog.cancel()
-                }
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }
@@ -69,4 +71,3 @@ class MemberInviteDialogFragment : DialogFragment() {
         listener = null
     }
 }
-

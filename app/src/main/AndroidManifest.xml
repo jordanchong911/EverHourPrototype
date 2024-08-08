@@ -31,9 +31,14 @@
         <activity
             android:name=".ProjectCreateActivity"
             android:exported="false"/>
-        <activity android:name=".ProjectDetailsActivity"
+        <activity
+            android:name=".ProjectDetailsActivity"
             android:exported="false"/>
-        <activity android:name=".TimeEntriesActivity"
+        <activity
+            android:name=".TimeEntriesActivity"
+            android:exported="false"/>
+        <activity
+            android:name="EntryTimerActivity"
             android:exported="false"/>
         <activity
             android:name=".SignInActivity"

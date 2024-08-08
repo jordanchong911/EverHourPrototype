@@ -46,6 +46,7 @@
     <string name="existing_ws">Existing Workspaces</string>
     <string name="dummy_ws_name">Workspace Name</string>
     <string name="dummy_project_name">Project Name</string>
+    <string name="dummy_time_entry_name">Time Entry Name</string>
     <string name="dummy_client_name">Client Name</string>
     <string name="dummy_role_ic">Role-in-charge</string>
     <string name="dummy_role">Admin</string>
@@ -63,6 +64,7 @@
     <string name="role_ic">Team</string>
     <string name="time_entries_stats">Time Entries Count</string>
     <string name="dummy_entries_count">2048</string>
+    <string name="dummy_time_entry_rate">Rate</string>
     <string name="time_entries">Time Entries</string>
 
     <string name="invite">Invite a new Member</string>
@@ -71,7 +73,7 @@
     <string name="filter">Filter</string>
 
     <string name="dummy_entry_name">Very Very Very Very Very Very Long Task Name</string>
-    <string name="dummy_time">02:13:04</string>
+    <string name="dummy_time">00:00:00</string>
     <string name="time_elapsed">Time Elapsed</string>
     <string name="billable">Billable</string>
     <string name="billable_hrs">Billable Hours</string>
@@ -95,15 +97,21 @@
 
     <string name="set">Set</string>
     <string name="projects_details">Project Details</string>
+    <string name="entry_update_details">Time Entry Details</string>
 
     <string name="delete_ws">Delete Workspace?</string>
     <string name="delete_project">Delete Project?</string>
     <string name="delete_member">Delete Member?</string>
+    <string name="delete_time_entry">Delete Time Entry?</string>
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
 
     <string name="on">On</string>
     <string name="off">Off</string>
+
+    <string name="logout">Do you want to log out?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
 
 </resources>

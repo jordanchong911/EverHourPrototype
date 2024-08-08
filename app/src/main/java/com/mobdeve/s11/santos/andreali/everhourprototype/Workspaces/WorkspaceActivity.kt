@@ -1,17 +1,13 @@
 package com.mobdeve.s11.santos.andreali.everhourprototype.Workspaces
 
-import Workspace
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.mobdeve.s11.santos.andreali.everhourprototype.databinding.WorkspaceOverviewBinding
 import com.mobdeve.s11.santos.andreali.everhourprototype.AccountActivity
 import com.mobdeve.s11.santos.andreali.everhourprototype.WorkspaceAdapter
@@ -30,10 +26,11 @@ class WorkspaceActivity : AppCompatActivity() {
         binding = WorkspaceOverviewBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Initialize FirebaseAuth and DatabaseReference
         auth = FirebaseAuth.getInstance()
         dbRef = FirebaseDatabase.getInstance().reference
-        val userId = auth.currentUser?.uid ?: return
 
+        // Set up RecyclerView and Adapter
         binding.rvWorkspaces.layoutManager = LinearLayoutManager(this)
         workspaceAdapter = WorkspaceAdapter(mutableListOf()) { workspace ->
             val intent = Intent(this, WorkspaceDetailsActivity::class.java).apply {
@@ -43,7 +40,8 @@ class WorkspaceActivity : AppCompatActivity() {
         }
         binding.rvWorkspaces.adapter = workspaceAdapter
 
-        fetchWorkspaces() // Initial fetch
+        // Fetch workspaces
+        fetchWorkspaces()
 
         // Handle button click to create a new workspace
         binding.btnCreateWs.setOnClickListener {
@@ -51,7 +49,7 @@ class WorkspaceActivity : AppCompatActivity() {
             startActivityForResult(intent, CREATE_WORKSPACE_REQUEST_CODE)
         }
 
-        // Handle navigation
+        // Handle home button click
         binding.ivHome.setOnClickListener {
             // already here
         }
@@ -75,17 +73,20 @@ class WorkspaceActivity : AppCompatActivity() {
                     val workspace = data.getValue(Workspace::class.java)
                     if (workspace != null) {
                         workspaces.add(workspace)
+                    } else {
+                        Log.e("WorkspaceActivity", "Null workspace data found or data type mismatch")
                     }
                 }
                 workspaceAdapter.updateData(workspaces)
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(this@WorkspaceActivity, "Failed to load workspaces.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@WorkspaceActivity, "Failed to load workspaces: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
+    // Handle result from WorkspaceCreateActivity
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == CREATE_WORKSPACE_REQUEST_CODE && resultCode == RESULT_OK) {

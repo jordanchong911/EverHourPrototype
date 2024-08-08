@@ -1,12 +1,24 @@
 package com.mobdeve.s11.santos.andreali.everhourprototype
 
+import android.app.AlertDialog
+import android.content.Context
+import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.database.FirebaseDatabase
 import com.mobdeve.s11.santos.andreali.everhourprototype.databinding.EntryCardBinding
 
 class TimeEntriesAdapter(
-    private var timeEntries: MutableList<TimeEntry>
+    private val timeEntries: MutableList<TimeEntry>,
+    private val fragmentManager: FragmentManager,
+    private val projectId: String,
+    private val projectName: String,  // projectName is now required
+    private val workspaceId: String,
+    private val context: Context
 ) : RecyclerView.Adapter<TimeEntriesAdapter.TimeEntryViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimeEntryViewHolder {
@@ -25,9 +37,81 @@ class TimeEntriesAdapter(
         fun bind(timeEntry: TimeEntry) {
             binding.tvEntryName.text = timeEntry.name
             binding.tvTime.text = timeEntry.timeElapsed
-//            binding.tvRole.text =
-//            binding.cbBillable =  put logic here
             binding.tvRate.text = timeEntry.rate.toString()
+
+            // Set the click listener for the three dots
+            binding.ivDots.setOnClickListener {
+                showOptionsDialog(timeEntry)
+            }
+
+            // Set the click listener for the record button
+            binding.ibRecord.setOnClickListener {
+                navigateToEntryTimerActivity(timeEntry)
+            }
+        }
+
+        private fun showOptionsDialog(timeEntry: TimeEntry) {
+            val optionsDialog = AlertDialog.Builder(binding.root.context)
+                .setItems(arrayOf("Update", "Delete")) { _, which ->
+                    when (which) {
+                        0 -> showUpdateDialog(timeEntry)
+                        1 -> showDeleteDialog(timeEntry)
+                    }
+                }
+                .create()
+            optionsDialog.show()
+        }
+
+        private fun showUpdateDialog(timeEntry: TimeEntry) {
+            val updateDialog = TimeEntryUpdateDialogFragment(timeEntry) { updatedTimeEntry ->
+                updateTimeEntryInFirebase(updatedTimeEntry)
+            }
+            updateDialog.show(fragmentManager, "TimeEntryUpdateDialog")
+        }
+
+        private fun showDeleteDialog(timeEntry: TimeEntry) {
+            val deleteDialog = TimeEntryDeleteDialogFragment(timeEntry) {
+                deleteTimeEntryFromFirebase(timeEntry.timeEntryID)
+            }
+            deleteDialog.show(fragmentManager, "TimeEntryDeleteDialog")
+        }
+
+        private fun navigateToEntryTimerActivity(timeEntry: TimeEntry) {
+            val intent = Intent(context, EntryTimerActivity::class.java).apply {
+                putExtra("TIME_ENTRY_ID", timeEntry.timeEntryID)
+                putExtra("PROJECT_ID", projectId)
+                putExtra("WORKSPACE_ID", workspaceId)
+                putExtra("PROJECT_NAME", projectName)   // Pass the project name
+                putExtra("ENTRY_NAME", timeEntry.name)  // Pass the entry name
+            }
+            context.startActivity(intent)
+        }
+
+        private fun updateTimeEntryInFirebase(timeEntry: TimeEntry) {
+            val databaseReference = FirebaseDatabase.getInstance().getReference("time_entries")
+                .child(projectId).child(timeEntry.timeEntryID)
+            databaseReference.setValue(timeEntry).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(binding.root.context, "Time entry updated successfully", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(binding.root.context, "Failed to update time entry", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        private fun deleteTimeEntryFromFirebase(timeEntryID: String) {
+            val databaseReference = FirebaseDatabase.getInstance().getReference("time_entries")
+                .child(projectId).child(timeEntryID)
+            databaseReference.removeValue().addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(binding.root.context, "Time entry deleted successfully", Toast.LENGTH_SHORT).show()
+                    timeEntries.removeAt(adapterPosition)
+                    notifyItemRemoved(adapterPosition)
+                } else {
+                    Toast.makeText(binding.root.context, "Failed to delete time entry", Toast.LENGTH_SHORT).show()
+                    Log.e("DeleteTimeEntry", "Delete failed: ${task.exception?.message}")
+                }
+            }
         }
     }
 

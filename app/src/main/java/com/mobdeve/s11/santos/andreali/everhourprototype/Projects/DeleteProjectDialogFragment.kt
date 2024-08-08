@@ -6,34 +6,37 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.google.firebase.database.FirebaseDatabase
 
-class DeleteWorkspaceDialogFragment(private val workspaceId: String) : DialogFragment() {
+class DeleteProjectDialogFragment(
+    private val workspaceId: String, // Add workspaceId parameter
+    private val projectId: String
+) : DialogFragment() {
 
-    interface OnWorkspaceDeletedListener {
-        fun onWorkspaceDeleted()
+    interface OnProjectDeletedListener {
+        fun onProjectDeleted()
     }
 
-    private var listener: OnWorkspaceDeletedListener? = null
+    private var listener: OnProjectDeletedListener? = null
 
-    fun setOnWorkspaceDeletedListener(listener: OnWorkspaceDeletedListener) {
+    fun setOnProjectDeletedListener(listener: OnProjectDeletedListener) {
         this.listener = listener
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return AlertDialog.Builder(requireContext())
-            .setTitle("Delete Workspace")
-            .setMessage("Are you sure you want to delete this workspace?")
+            .setTitle("Delete Project")
+            .setMessage("Are you sure you want to delete this project?")
             .setPositiveButton("Delete") { _, _ ->
-                deleteWorkspace()
+                deleteProject()
             }
             .setNegativeButton("Cancel", null)
             .create()
     }
 
-    private fun deleteWorkspace() {
+    private fun deleteProject() {
         val dbRef = FirebaseDatabase.getInstance().reference
-        dbRef.child("workspaces").child(workspaceId).removeValue()
+        dbRef.child("workspaces").child(workspaceId).child("projects").child(projectId).removeValue()
             .addOnSuccessListener {
-                listener?.onWorkspaceDeleted()
+                listener?.onProjectDeleted()
             }
             .addOnFailureListener {
                 // Handle failure

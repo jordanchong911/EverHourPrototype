@@ -3,6 +3,7 @@ package com.mobdeve.s11.santos.andreali.everhourprototype
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
@@ -47,19 +48,20 @@ class MemberRoleDialogFragment : DialogFragment() {
 
             val tilRole = view.findViewById<TextInputLayout>(R.id.tilEmail)
             val editRole = view.findViewById<TextInputEditText>(R.id.etRole)
+            val btnSetRole = view.findViewById<Button>(R.id.btnSetRoleName)
+
+            // Handle button click
+            btnSetRole.setOnClickListener {
+                val role = editRole.text.toString()
+                if (role.isNotBlank()) {
+                    listener?.onRoleSet(email, role)
+                    dismiss() // Dismiss the dialog after setting the role
+                } else {
+                    Toast.makeText(context, "Please enter a role", Toast.LENGTH_SHORT).show()
+                }
+            }
 
             builder.setView(view)
-                .setPositiveButton("Set Role") { _, _ ->
-                    val role = editRole.text.toString()
-                    if (role.isNotBlank()) {
-                        listener?.onRoleSet(email, role)
-                    } else {
-                        Toast.makeText(context, "Please enter a role", Toast.LENGTH_SHORT).show()
-                    }
-                }
-                .setNegativeButton("Cancel") { dialog, _ ->
-                    dialog.cancel()
-                }
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }

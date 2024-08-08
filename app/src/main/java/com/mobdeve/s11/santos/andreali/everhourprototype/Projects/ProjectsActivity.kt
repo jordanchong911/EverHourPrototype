@@ -43,6 +43,7 @@ class ProjectsActivity : AppCompatActivity() {
             finish()
             return
         }
+
         Log.d("ProjectsActivity", "Received workspace ID: $workspaceId")
         Log.d("ProjectsActivity", "Received workspace name: $workspaceName")
 
@@ -79,8 +80,9 @@ class ProjectsActivity : AppCompatActivity() {
         binding.rvProjects.adapter = projectAdapter
     }
 
-    private fun fetchProjects() {
-        dbRef.child("projects").child(workspaceId).addListenerForSingleValueEvent(object : ValueEventListener {
+    fun fetchProjects() {
+        // Updated path to include workspaces
+        dbRef.child("workspaces").child(workspaceId).child("projects").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val projectsList = mutableListOf<Project>()
                 for (projectSnapshot in snapshot.children) {
@@ -92,14 +94,8 @@ class ProjectsActivity : AppCompatActivity() {
                     }
                 }
 
-                if (projectsList.isEmpty()) {
-                    val intent = Intent(this@ProjectsActivity, ProjectCreateActivity::class.java)
-                    intent.putExtra("WORKSPACE_ID", workspaceId)
-                    startActivity(intent)
-                    finish()
-                } else {
-                    projectAdapter.updateProjects(projectsList)
-                }
+                // Update the adapter with the fetched projects
+                projectAdapter.updateProjects(projectsList)
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -111,7 +107,8 @@ class ProjectsActivity : AppCompatActivity() {
     private fun updateProject(project: Project, name: String, client: String, roleIC: String) {
         val updatedProject = project.copy(name = name, client = client, roleIC = roleIC)
 
-        dbRef.child("projects").child(workspaceId).child(project.projectID).setValue(updatedProject)
+        // Updated path to include workspaces
+        dbRef.child("workspaces").child(workspaceId).child("projects").child(project.projectID).setValue(updatedProject)
             .addOnSuccessListener {
                 Toast.makeText(this, "Project updated successfully.", Toast.LENGTH_SHORT).show()
             }
@@ -121,7 +118,8 @@ class ProjectsActivity : AppCompatActivity() {
     }
 
     private fun deleteProject(projectID: String) {
-        dbRef.child("projects").child(workspaceId).child(projectID).removeValue()
+        // Updated path to include workspaces
+        dbRef.child("workspaces").child(workspaceId).child("projects").child(projectID).removeValue()
             .addOnSuccessListener {
                 Toast.makeText(this, "Project deleted successfully.", Toast.LENGTH_SHORT).show()
             }
