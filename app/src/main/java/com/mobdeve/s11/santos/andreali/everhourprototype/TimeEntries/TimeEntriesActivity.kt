@@ -14,6 +14,8 @@ class TimeEntriesActivity : AppCompatActivity() {
     private lateinit var binding: EntryOverviewBinding
     private lateinit var dbRef: DatabaseReference
     private lateinit var projectId: String
+    private lateinit var projectName: String
+    private lateinit var workspaceId: String
     private lateinit var timeEntriesAdapter: TimeEntriesAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,9 +24,25 @@ class TimeEntriesActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         dbRef = FirebaseDatabase.getInstance().reference
+
+        // Retrieve the projectId, projectName, and workspaceId from the intent
         projectId = intent.getStringExtra("PROJECT_ID") ?: run {
             Log.e("TimeEntriesActivity", "Project ID not found in intent")
             Toast.makeText(this, "Project ID missing", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
+        projectName = intent.getStringExtra("PROJECT_NAME") ?: run {
+            Log.e("TimeEntriesActivity", "Project Name not found in intent")
+            Toast.makeText(this, "Project Name missing", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
+        workspaceId = intent.getStringExtra("WORKSPACE_ID") ?: run {
+            Log.e("TimeEntriesActivity", "Workspace ID not found in intent")
+            Toast.makeText(this, "Workspace ID missing", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
@@ -38,10 +56,10 @@ class TimeEntriesActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
-        binding.ivReport.setOnClickListener{
+        binding.ivReport.setOnClickListener {
             //TODO: place report activity here
         }
-        binding.ivAccount.setOnClickListener{
+        binding.ivAccount.setOnClickListener {
             val intent = Intent(this, AccountActivity::class.java)
             startActivity(intent)
             finish()
@@ -49,7 +67,19 @@ class TimeEntriesActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        timeEntriesAdapter = TimeEntriesAdapter(mutableListOf())
+        val fragmentManager = supportFragmentManager  // Get FragmentManager from Activity
+        val context = this // Get context from Activity
+
+        // Instantiate the adapter with all required parameters
+        timeEntriesAdapter = TimeEntriesAdapter(
+            timeEntries = mutableListOf(),
+            fragmentManager = fragmentManager,
+            projectId = projectId,
+            projectName = projectName,
+            workspaceId = workspaceId,
+            context = context
+        )
+
         binding.rvPEntries.layoutManager = LinearLayoutManager(this)
         binding.rvPEntries.adapter = timeEntriesAdapter
     }
