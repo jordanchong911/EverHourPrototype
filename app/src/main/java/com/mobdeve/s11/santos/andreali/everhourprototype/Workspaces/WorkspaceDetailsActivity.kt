@@ -6,8 +6,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.mobdeve.s11.santos.andreali.everhourprototype.Projects.ProjectsActivity
-import com.mobdeve.s11.santos.andreali.everhourprototype.Workspaces.WorkspaceActivity
 import com.mobdeve.s11.santos.andreali.everhourprototype.databinding.WorkspaceDetailsBinding
 
 class WorkspaceDetailsActivity : AppCompatActivity(),
@@ -69,19 +67,41 @@ class WorkspaceDetailsActivity : AppCompatActivity(),
 
     private fun fetchWorkspaceDetails(workspaceId: String) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
-        dbRef.child("workspaces").child(userId).child(workspaceId).get()
-            .addOnSuccessListener { snapshot ->
+        val workspaceRef = dbRef.child("workspaces").child(userId).child(workspaceId)
+
+        workspaceRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
                 val workspace = snapshot.getValue(Workspace::class.java)
                 if (workspace != null) {
                     currentName = workspace.name
                     binding.tvWorkspaceDetails.text = workspace.name
                     binding.tvTrackedNum.text = workspace.hours.toString()
-                    binding.tvCountNum.text = workspace.projectsCount.toString()
+
+                    // Fetch the count of projects
+                    fetchProjectCount(workspaceId)
                 }
             }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Failed to load workspace details: ${e.message}", Toast.LENGTH_SHORT).show()
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@WorkspaceDetailsActivity, "Failed to load workspace details: ${error.message}", Toast.LENGTH_SHORT).show()
             }
+        })
+    }
+
+    private fun fetchProjectCount(workspaceId: String) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val projectsRef = dbRef.child("workspaces").child(userId).child(workspaceId).child("projects")
+
+        projectsRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val projectCount = snapshot.childrenCount
+                binding.tvCountNum.text = projectCount.toString()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@WorkspaceDetailsActivity, "Failed to load project count: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun showUpdateWorkspaceDialog() {

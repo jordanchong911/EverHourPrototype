@@ -5,12 +5,12 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.mobdeve.s11.santos.andreali.everhourprototype.Workspaces.WorkspaceActivity
+import com.google.firebase.database.ValueEventListener
 import com.mobdeve.s11.santos.andreali.everhourprototype.databinding.ProjectDetailsBinding
 
 class ProjectDetailsActivity : AppCompatActivity() {
@@ -19,6 +19,7 @@ class ProjectDetailsActivity : AppCompatActivity() {
     private lateinit var dbRef: DatabaseReference
     private lateinit var projectId: String
     private lateinit var workspaceId: String
+    private lateinit var userId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +27,13 @@ class ProjectDetailsActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         dbRef = FirebaseDatabase.getInstance().reference
+        userId = FirebaseAuth.getInstance().currentUser?.uid ?: run {
+            Log.e("ProjectDetailsActivity", "User ID not found")
+            Toast.makeText(this, "User ID missing", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
         projectId = intent.getStringExtra("PROJECT_ID") ?: ""
         workspaceId = intent.getStringExtra("WORKSPACE_ID") ?: ""
 
@@ -43,10 +51,10 @@ class ProjectDetailsActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
-        binding.ivReport.setOnClickListener{
-            //TODO: place report activity here
+        binding.ivReport.setOnClickListener {
+            // TODO: place report activity here
         }
-        binding.ivAccount.setOnClickListener{
+        binding.ivAccount.setOnClickListener {
             val intent = Intent(this, AccountActivity::class.java)
             startActivity(intent)
             finish()
@@ -58,7 +66,7 @@ class ProjectDetailsActivity : AppCompatActivity() {
     }
 
     private fun fetchProjectDetails() {
-        dbRef.child("workspaces").child(workspaceId).child("projects").child(projectId).addListenerForSingleValueEvent(object : ValueEventListener {
+        dbRef.child("workspaces").child(userId).child(workspaceId).child("projects").child(projectId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val project = snapshot.getValue(Project::class.java)
                 if (project != null) {
@@ -82,7 +90,7 @@ class ProjectDetailsActivity : AppCompatActivity() {
     }
 
     private fun checkTimeEntries() {
-        dbRef.child("workspaces").child(workspaceId).child("projects").child(projectId).child("time_entries").addListenerForSingleValueEvent(object : ValueEventListener {
+        dbRef.child("workspaces").child(userId).child(workspaceId).child("projects").child(projectId).child("time_entries").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     // Time entries exist, launch TimeEntriesActivity
@@ -121,7 +129,7 @@ class ProjectDetailsActivity : AppCompatActivity() {
     }
 
     private fun saveTimeEntry(entryName: String, entryRate: Int) {
-        val timeEntryID = dbRef.child("workspaces").child(workspaceId).child("projects").child(projectId).child("time_entries").push().key ?: return
+        val timeEntryID = dbRef.child("workspaces").child(userId).child(workspaceId).child("projects").child(projectId).child("time_entries").push().key ?: return
         val timeEntry = TimeEntry(
             workplaceID = workspaceId,
             projectID = projectId,
@@ -130,7 +138,7 @@ class ProjectDetailsActivity : AppCompatActivity() {
             timeElapsed = "00:00:00", // Default start time
             rate = entryRate
         )
-        dbRef.child("workspaces").child(workspaceId).child("projects").child(projectId).child("time_entries").child(timeEntryID).setValue(timeEntry)
+        dbRef.child("workspaces").child(userId).child(workspaceId).child("projects").child(projectId).child("time_entries").child(timeEntryID).setValue(timeEntry)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(this, "Time entry added successfully", Toast.LENGTH_SHORT).show()

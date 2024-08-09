@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
 class DeleteProjectDialogFragment(
@@ -33,8 +34,13 @@ class DeleteProjectDialogFragment(
     }
 
     private fun deleteProject() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: run {
+            // Handle case where userId is not available
+            return
+        }
+
         val dbRef = FirebaseDatabase.getInstance().reference
-        dbRef.child("workspaces").child(workspaceId).child("projects").child(projectId).removeValue()
+        dbRef.child("workspaces").child(userId).child(workspaceId).child("projects").child(projectId).removeValue()
             .addOnSuccessListener {
                 listener?.onProjectDeleted()
             }

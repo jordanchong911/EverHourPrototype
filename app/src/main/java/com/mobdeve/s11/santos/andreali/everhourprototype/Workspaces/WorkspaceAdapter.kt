@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.mobdeve.s11.santos.andreali.everhourprototype.Workspaces.WorkspaceActivity
 import com.mobdeve.s11.santos.andreali.everhourprototype.databinding.WorkspaceCardBinding
 
 class WorkspaceAdapter(
@@ -46,8 +45,11 @@ class WorkspaceAdapter(
                 val dialog = DeleteWorkspaceDialogFragment(workspace.id)
                 dialog.setOnWorkspaceDeletedListener(object : DeleteWorkspaceDialogFragment.OnWorkspaceDeletedListener {
                     override fun onWorkspaceDeleted() {
-                        // Refresh workspaces after deletion
-                        // Note: Assuming you fetch the updated list elsewhere
+                        // Remove the deleted workspace from the list and notify the adapter
+                        workspaces.removeAt(adapterPosition)
+                        notifyItemRemoved(adapterPosition)
+
+                        // Optionally, fetch the updated list of workspaces
                         (itemView.context as WorkspaceActivity).fetchWorkspaces()
                     }
                 })

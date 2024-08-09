@@ -4,12 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.mobdeve.s11.santos.andreali.everhourprototype.Workspaces.WorkspaceActivity
 
 class MembersActivity : AppCompatActivity(),
     MemberInviteDialogFragment.OnMemberInviteListener,
@@ -22,6 +23,7 @@ class MembersActivity : AppCompatActivity(),
     private lateinit var memberAdapter: MemberAdapter
     private lateinit var dbRef: DatabaseReference
     private lateinit var workspaceId: String
+    private lateinit var userId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +36,9 @@ class MembersActivity : AppCompatActivity(),
         workspaceId = intent.getStringExtra("WORKSPACE_ID") ?: return
 
         // Initialize Firebase reference
-        dbRef = FirebaseDatabase.getInstance().getReference("workspaces").child(workspaceId).child("members")
+        val auth = FirebaseAuth.getInstance()
+        userId = auth.currentUser?.uid ?: return
+        dbRef = FirebaseDatabase.getInstance().reference.child("workspaces").child(userId).child(workspaceId).child("members")
 
         // Initialize adapter with empty list
         memberAdapter = MemberAdapter(this, this)
@@ -49,15 +53,15 @@ class MembersActivity : AppCompatActivity(),
         }
 
         // Navbar Buttons
-        findViewById<Button>(R.id.ivHome).setOnClickListener {
+        findViewById<ImageView>(R.id.ivHome).setOnClickListener {
             val intent = Intent(this, WorkspaceActivity::class.java)
             startActivity(intent)
             finish()
         }
-        findViewById<Button>(R.id.ivReport).setOnClickListener{
-            //TODO: place report activity here
+        findViewById<ImageView>(R.id.ivReport).setOnClickListener {
+            // TODO: place report activity here
         }
-        findViewById<Button>(R.id.ivAccount).setOnClickListener{
+        findViewById<ImageView>(R.id.ivAccount).setOnClickListener {
             val intent = Intent(this, AccountActivity::class.java)
             startActivity(intent)
             finish()

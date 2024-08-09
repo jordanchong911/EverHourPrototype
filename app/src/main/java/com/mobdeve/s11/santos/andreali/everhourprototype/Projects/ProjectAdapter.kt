@@ -5,7 +5,6 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.mobdeve.s11.santos.andreali.everhourprototype.Projects.ProjectsActivity
 import com.mobdeve.s11.santos.andreali.everhourprototype.databinding.ProjectCardBinding
 
 class ProjectAdapter(
@@ -37,6 +36,7 @@ class ProjectAdapter(
 
         fun bind(project: Project) {
             binding.tvProjectName.text = project.name
+            binding.tvRoleIC.text = project.roleIC
 
             // Handle click event for the card to navigate to ProjectDetailsActivity
             itemView.setOnClickListener {
