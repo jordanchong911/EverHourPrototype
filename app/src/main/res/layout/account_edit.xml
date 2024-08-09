@@ -168,7 +168,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/btnSavePassword"
+        android:id="@+id/btnSaveChanges"
         android:layout_width="330dp"
         android:layout_height="48dp"
         android:background="@drawable/gradient"

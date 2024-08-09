@@ -2,6 +2,7 @@ package com.mobdeve.s11.santos.andreali.everhourprototype.Account
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -40,18 +41,21 @@ class AccountEditActivity : AppCompatActivity() {
                         binding.tvEmail.text = email
                     } else {
                         Toast.makeText(this@AccountEditActivity, "Failed to load user data", Toast.LENGTH_SHORT).show()
+                        Log.e("AccountEditActivity", "Failed to load user data: firstName, lastName, or email is null")
                     }
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {
                     Toast.makeText(this@AccountEditActivity, "Database error: ${databaseError.message}", Toast.LENGTH_SHORT).show()
+                    Log.e("AccountEditActivity", "Database error: ${databaseError.message}")
                 }
             })
         } else {
             Toast.makeText(this, "No authenticated user", Toast.LENGTH_SHORT).show()
+            Log.e("AccountEditActivity", "No authenticated user")
         }
 
-        binding.btnSavePassword.setOnClickListener {
+        binding.btnSaveChanges.setOnClickListener {
             val newFirstName = binding.tilFirstname.editText?.text.toString().trim()
             val newLastName = binding.tilLastname.editText?.text.toString().trim()
             val newEmail = binding.etvEmail.text.toString().trim()
@@ -79,6 +83,7 @@ class AccountEditActivity : AppCompatActivity() {
 
                     override fun onCancelled(databaseError: DatabaseError) {
                         Toast.makeText(this@AccountEditActivity, "Database error: ${databaseError.message}", Toast.LENGTH_SHORT).show()
+                        Log.e("AccountEditActivity", "Database error: ${databaseError.message}")
                     }
                 })
         }
@@ -130,14 +135,17 @@ class AccountEditActivity : AppCompatActivity() {
                                     finish()
                                 } else {
                                     Toast.makeText(this, "Failed to update profile in database", Toast.LENGTH_SHORT).show()
+                                    Log.e("AccountEditActivity", "Failed to update profile in database")
                                 }
                             }
                     } else {
                         Toast.makeText(this, "Failed to update profile", Toast.LENGTH_SHORT).show()
+                        Log.e("AccountEditActivity", "Failed to update profile")
                     }
                 }
             } else {
                 Toast.makeText(this, "Failed to update email", Toast.LENGTH_SHORT).show()
+                Log.e("AccountEditActivity", "Failed to update email")
             }
         }
     }
