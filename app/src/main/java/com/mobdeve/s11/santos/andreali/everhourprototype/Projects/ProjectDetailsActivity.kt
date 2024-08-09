@@ -11,8 +11,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import com.mobdeve.s11.santos.andreali.everhourprototype.Account.AccountActivity
-import com.mobdeve.s11.santos.andreali.everhourprototype.Workspaces.WorkspaceActivity
 import com.mobdeve.s11.santos.andreali.everhourprototype.databinding.ProjectDetailsBinding
 
 class ProjectDetailsActivity : AppCompatActivity() {
@@ -73,7 +71,7 @@ class ProjectDetailsActivity : AppCompatActivity() {
     }
 
     private fun fetchProjectDetails() {
-        dbRef.child("workspaces").child(userId).child(workspaceId).child("projects").child(projectId).addListenerForSingleValueEvent(object : ValueEventListener {
+        dbRef.child("workspaces").child(workspaceId).child("projects").child(projectId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val project = snapshot.getValue(Project::class.java)
                 if (project != null) {

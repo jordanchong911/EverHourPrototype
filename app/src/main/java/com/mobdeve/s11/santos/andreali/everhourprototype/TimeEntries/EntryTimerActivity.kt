@@ -8,10 +8,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.DialogFragment
-import com.mobdeve.s11.santos.andreali.everhourprototype.Account.AccountActivity
-import com.mobdeve.s11.santos.andreali.everhourprototype.R
-import com.mobdeve.s11.santos.andreali.everhourprototype.Workspaces.WorkspaceActivity
 
 class EntryTimerActivity : AppCompatActivity() {
 

@@ -15,7 +15,7 @@ class MemberAdapter(
 
     inner class MemberViewHolder(private val binding: MemberCardBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(member: Member) {
-            binding.tvUsername.text = member.email
+            binding.tvUsername.text = "${member.lname}, ${member.fname}"
             binding.tvRole.text = member.role
 
             // Set up click listener for role TextView

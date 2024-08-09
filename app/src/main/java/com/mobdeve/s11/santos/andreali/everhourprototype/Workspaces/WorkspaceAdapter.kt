@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.mobdeve.s11.santos.andreali.everhourprototype.Workspaces.WorkspaceActivity
 import com.mobdeve.s11.santos.andreali.everhourprototype.databinding.WorkspaceCardBinding
 
 class WorkspaceAdapter(
@@ -40,7 +39,7 @@ class WorkspaceAdapter(
                 onItemClick(workspace)
             }
 
-            // Handle the click event for the dots
+            // Handle the click event for the dots (delete action)
             binding.ivDots.setOnClickListener {
                 // Create and show the delete dialog
                 val dialog = DeleteWorkspaceDialogFragment(workspace.id)
@@ -50,8 +49,8 @@ class WorkspaceAdapter(
                         workspaces.removeAt(adapterPosition)
                         notifyItemRemoved(adapterPosition)
 
-                        // Optionally, fetch the updated list of workspaces
-                        (itemView.context as WorkspaceActivity).fetchWorkspaces()
+                        // Optionally, notify the activity to fetch the updated list of workspaces
+                        (itemView.context as? WorkspaceActivity)?.fetchWorkspaces()
                     }
                 })
                 dialog.show((itemView.context as AppCompatActivity).supportFragmentManager, "DeleteWorkspaceDialog")

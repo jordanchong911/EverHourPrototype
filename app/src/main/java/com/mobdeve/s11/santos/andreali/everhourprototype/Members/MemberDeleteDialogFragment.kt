@@ -57,6 +57,11 @@ class MemberDeleteDialogFragment : DialogFragment() {
             }
     }
 
+    // Method to set the listener
+    fun setOnDeleteListener(listener: OnDeleteListener) {
+        this.listener = listener
+    }
+
     override fun onDetach() {
         super.onDetach()
         listener = null

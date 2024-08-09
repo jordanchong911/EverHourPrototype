@@ -3,19 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cvMemberInvite"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_margin="5dp"
     android:padding="5dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cloMemberInvite"
-        android:layout_width="330dp"
-        android:layout_height="200dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="@drawable/gradient"
         android:padding="10dp"
-        tools:ignore="TextSizeCheck"
-        tools:layout_editor_absoluteX="1dp">
+        tools:ignore="TextSizeCheck">
 
         <TextView
             android:id="@+id/tvInvite"
@@ -31,29 +30,21 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilEmail"
-            android:layout_width="300dp"
-            android:layout_height="48dp"
+        <Spinner
+            android:id="@+id/userSpinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:background="@drawable/inputfields"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/btnInvite"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.5">
+            app:layout_constraintTop_toBottomOf="@+id/tvInvite"
+            app:layout_constraintHorizontal_bias="0.5" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etInvEmail"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                android:hint="@string/email"
-                android:textColor="@color/blue3"
-                android:textColorHint="@color/blue3"
-                android:textStyle="italic"
-                tools:ignore="TouchTargetSizeCheck" />
-        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/btnInvite"

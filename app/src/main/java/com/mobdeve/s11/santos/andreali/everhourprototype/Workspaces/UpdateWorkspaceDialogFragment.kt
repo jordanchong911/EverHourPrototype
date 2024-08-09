@@ -2,76 +2,83 @@ package com.mobdeve.s11.santos.andreali.everhourprototype
 
 import android.app.Dialog
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
 import android.widget.Button
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import android.widget.EditText
 import androidx.fragment.app.DialogFragment
-import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
-class UpdateWorkspaceDialogFragment(
-    private val workspaceId: String,
-    private val currentName: String
-) : DialogFragment() {
+class UpdateWorkspaceDialogFragment : DialogFragment() {
 
-    private lateinit var dbRef: DatabaseReference
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        // Inflate the custom dialog view
-        val dialogView = requireActivity().layoutInflater.inflate(R.layout.workspace_update_ol, null)
-        dbRef = FirebaseDatabase.getInstance().reference
-
-        // Initialize the EditText and set the current workspace name
-        val editText = dialogView.findViewById<TextInputEditText>(R.id.etWorkspaceName)
-        editText.setText(currentName)
-
-        // Set up the "Set" button to update the workspace name
-        val btnSetWorkSpName = dialogView.findViewById<Button>(R.id.btnSetWorkSpName)
-        val btnCancel = dialogView.findViewById<Button>(R.id.btnCancel)
-
-        btnSetWorkSpName.setOnClickListener {
-            val newName = editText.text.toString()
-            if (newName.isNotBlank()) {
-                updateWorkspaceName(newName)
-                dismiss() // Close the dialog after updating
-            } else {
-                if (isAdded) {
-                    Toast.makeText(requireContext(), "Workspace name cannot be empty.", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-
-        btnCancel.setOnClickListener {
-            dismiss() // Close the dialog without making any changes
-        }
-
-        // Build the dialog using AlertDialog.Builder
-        return AlertDialog.Builder(requireActivity())
-            .setView(dialogView)
-            .create()
-    }
-
-    private fun updateWorkspaceName(newName: String) {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
-        dbRef.child("workspaces").child(userId).child(workspaceId).child("name").setValue(newName)
-            .addOnSuccessListener {
-                if (isAdded) {
-                    Toast.makeText(requireContext(), "Workspace name updated.", Toast.LENGTH_SHORT).show()
-                    // Notify the activity to refresh the workspace details if needed
-                    (targetFragment as? OnWorkspaceUpdatedListener)?.onWorkspaceUpdated()
-                }
-            }
-            .addOnFailureListener { e ->
-                if (isAdded) {
-                    Toast.makeText(requireContext(), "Failed to update workspace name: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
-            }
-    }
-
-    // Interface for notifying the activity
     interface OnWorkspaceUpdatedListener {
         fun onWorkspaceUpdated()
+    }
+
+    private var listener: OnWorkspaceUpdatedListener? = null
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val workspaceId = arguments?.getString(ARG_WORKSPACE_ID) ?: ""
+        val currentName = arguments?.getString(ARG_CURRENT_NAME) ?: ""
+
+        val inflater = requireActivity().layoutInflater
+        val view = inflater.inflate(R.layout.workspace_update_ol, null)
+
+        val nameEditText = view.findViewById<EditText>(R.id.etWorkspaceName)
+        nameEditText.setText(currentName)
+
+        val setButton = view.findViewById<Button>(R.id.btnSetWorkSpName)
+        val cancelButton = view.findViewById<Button>(R.id.btnCancel)
+
+        // Create a Dialog and set the custom view
+        val dialog = Dialog(requireContext())
+        dialog.setContentView(view)
+
+        // Set button click listeners
+        setButton.setOnClickListener {
+            val newName = nameEditText.text.toString()
+            updateWorkspaceName(workspaceId, newName)
+            dialog.dismiss() // Close the dialog after saving
+        }
+
+        cancelButton.setOnClickListener {
+            dialog.dismiss() // Close the dialog without making changes
+        }
+
+        return dialog
+    }
+
+    private fun updateWorkspaceName(workspaceId: String, newName: String) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val workspaceRef = FirebaseDatabase.getInstance().reference
+            .child("workspaces").child(userId).child(workspaceId)
+
+        workspaceRef.child("name").setValue(newName).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                listener?.onWorkspaceUpdated()
+            } else {
+                // Handle error
+                listener?.onWorkspaceUpdated() // Notify even on failure
+            }
+        }
+    }
+
+    companion object {
+        private const val ARG_WORKSPACE_ID = "workspace_id"
+        private const val ARG_CURRENT_NAME = "current_name"
+
+        @JvmStatic
+        fun newInstance(workspaceId: String, currentName: String) =
+            UpdateWorkspaceDialogFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_WORKSPACE_ID, workspaceId)
+                    putString(ARG_CURRENT_NAME, currentName)
+                }
+            }
+    }
+
+    fun setOnWorkspaceUpdatedListener(listener: OnWorkspaceUpdatedListener) {
+        this.listener = listener
     }
 }

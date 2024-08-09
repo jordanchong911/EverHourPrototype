@@ -3,28 +3,35 @@ package com.mobdeve.s11.santos.andreali.everhourprototype
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.database.*
 
 class MemberInviteDialogFragment : DialogFragment() {
 
     interface OnMemberInviteListener {
-        fun onMemberInvited(email: String)
+        fun onMemberInvited(email: String, userId: String, firstName: String, lastName: String)
     }
 
     private var listener: OnMemberInviteListener? = null
+    private lateinit var db: FirebaseDatabase
+    private lateinit var dbRef: DatabaseReference
+    private lateinit var userSpinner: Spinner
+    private lateinit var userList: List<String>
+    private lateinit var userMap: Map<String, UserInfo> // Maps full names to UserInfo
 
     companion object {
         private const val ARG_WORKSPACE_ID = "workspace_id"
 
         fun newInstance(workspaceId: String): MemberInviteDialogFragment {
             val fragment = MemberInviteDialogFragment()
-            val args = Bundle()
-            args.putString(ARG_WORKSPACE_ID, workspaceId)
+            val args = Bundle().apply {
+                putString(ARG_WORKSPACE_ID, workspaceId)
+            }
             fragment.arguments = args
             return fragment
         }
@@ -46,18 +53,22 @@ class MemberInviteDialogFragment : DialogFragment() {
             val inflater = requireActivity().layoutInflater
             val view = inflater.inflate(R.layout.member_invite_ol, null)
 
-            val tilEmail = view.findViewById<TextInputLayout>(R.id.tilEmail)
-            val editEmail = view.findViewById<TextInputEditText>(R.id.etInvEmail)
+            db = FirebaseDatabase.getInstance()
+            dbRef = db.reference.child("users")
+
+            userSpinner = view.findViewById(R.id.userSpinner)
             val btnInvite = view.findViewById<Button>(R.id.btnInvite)
 
-            // Handle button click
+            loadUsers()
+
             btnInvite.setOnClickListener {
-                val email = editEmail.text.toString()
-                if (email.isNotBlank()) {
-                    listener?.onMemberInvited(email)
-                    dismiss() // Dismiss the dialog after inviting
+                val selectedUser = userSpinner.selectedItem.toString()
+                val userInfo = userMap[selectedUser]
+                if (userInfo != null) {
+                    listener?.onMemberInvited(userInfo.email, userInfo.userId, userInfo.firstName, userInfo.lastName)
+                    dismiss()
                 } else {
-                    Toast.makeText(context, "Please enter an email", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Error with selected user", Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -66,8 +77,40 @@ class MemberInviteDialogFragment : DialogFragment() {
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        listener = null
+    private fun loadUsers() {
+        dbRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                userList = mutableListOf()
+                userMap = mutableMapOf()
+                for (userSnapshot in snapshot.children) {
+                    val userModel = userSnapshot.getValue(UserModel::class.java)
+                    val userId = userSnapshot.key
+                    if (userModel != null && userId != null) {
+                        val fullName = "${userModel.fname} ${userModel.lname}"
+                        (userList as MutableList).add(fullName)
+                        (userMap as MutableMap)[fullName] = UserInfo(userModel.email, userId, userModel.fname, userModel.lname)
+                    }
+                }
+                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, userList)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                userSpinner.adapter = adapter
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(context, "Failed to load users: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    // Data class for user information
+    data class UserInfo(
+        val email: String,
+        val userId: String,
+        val firstName: String,
+        val lastName: String
+    )
+
+    fun setOnMemberInviteListener(listener: OnMemberInviteListener) {
+        this.listener = listener
     }
 }

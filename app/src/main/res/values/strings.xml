@@ -56,6 +56,7 @@
 
     <string name="overview">Overview</string>
     <string name="tracked_hours">Tracked Hours</string>
+    <string name="member_count">Member Count</string>
     <string name="project_count">Project Count</string>
     <string name="specifics">Specifics</string>
     <string name="members">Members</string>

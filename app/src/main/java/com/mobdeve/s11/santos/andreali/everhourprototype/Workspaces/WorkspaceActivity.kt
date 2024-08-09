@@ -1,4 +1,4 @@
-package com.mobdeve.s11.santos.andreali.everhourprototype.Workspaces
+package com.mobdeve.s11.santos.andreali.everhourprototype
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,11 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.mobdeve.s11.santos.andreali.everhourprototype.databinding.WorkspaceOverviewBinding
-import com.mobdeve.s11.santos.andreali.everhourprototype.Account.AccountActivity
-import com.mobdeve.s11.santos.andreali.everhourprototype.Workspace
-import com.mobdeve.s11.santos.andreali.everhourprototype.WorkspaceAdapter
-import com.mobdeve.s11.santos.andreali.everhourprototype.WorkspaceCreateActivity
-import com.mobdeve.s11.santos.andreali.everhourprototype.WorkspaceDetailsActivity
 
 class WorkspaceActivity : AppCompatActivity() {
 
@@ -36,6 +31,7 @@ class WorkspaceActivity : AppCompatActivity() {
         workspaceAdapter = WorkspaceAdapter(mutableListOf()) { workspace ->
             val intent = Intent(this, WorkspaceDetailsActivity::class.java).apply {
                 putExtra("WORKSPACE_ID", workspace.id) // Pass the workspace ID
+                putExtra("WORKSPACE_NAME", workspace.name) // Pass the workspace name
             }
             startActivity(intent)
         }
@@ -50,14 +46,14 @@ class WorkspaceActivity : AppCompatActivity() {
             startActivityForResult(intent, CREATE_WORKSPACE_REQUEST_CODE)
         }
 
-        // Handle home button click
+        // Handle other button clicks
         binding.ivHome.setOnClickListener {
-            // already here
+            // Already here
         }
-        binding.ivReport.setOnClickListener{
-            //TODO: place report activity here
+        binding.ivReport.setOnClickListener {
+            // TODO: Place report activity here
         }
-        binding.ivAccount.setOnClickListener{
+        binding.ivAccount.setOnClickListener {
             val intent = Intent(this, AccountActivity::class.java)
             startActivity(intent)
             finish()
@@ -66,23 +62,33 @@ class WorkspaceActivity : AppCompatActivity() {
 
     // Fetch workspaces and update the RecyclerView
     fun fetchWorkspaces() {
-        val userId = auth.currentUser?.uid ?: return
-        dbRef.child("workspaces").child(userId).addValueEventListener(object : ValueEventListener {
+        // Use the root node for workspaces if there is no user ID in the path
+        val dbRef = FirebaseDatabase.getInstance().reference.child("workspaces")
+
+        dbRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val workspaces = mutableListOf<Workspace>()
-                for (data in snapshot.children) {
-                    val workspace = data.getValue(Workspace::class.java)
+                for (workspaceSnapshot in snapshot.children) {
+                    val workspace = workspaceSnapshot.getValue(Workspace::class.java)
+                    Log.d("WorkspaceActivity", "Fetched workspace data: $workspace")
                     if (workspace != null) {
+                        // Add the workspace to the list
                         workspaces.add(workspace)
                     } else {
-                        Log.e("WorkspaceActivity", "Null workspace data found or data type mismatch")
+                        Log.d("WorkspaceActivity", "Workspace is null")
                     }
                 }
+                if (workspaces.isEmpty()) {
+                    Log.d("WorkspaceActivity", "No workspaces found")
+                }
+                // Update the adapter with the fetched workspaces
                 workspaceAdapter.updateData(workspaces)
+                Log.d("WorkspaceActivity", "Updated adapter with ${workspaces.size} workspaces")
             }
 
             override fun onCancelled(error: DatabaseError) {
                 Toast.makeText(this@WorkspaceActivity, "Failed to load workspaces: ${error.message}", Toast.LENGTH_SHORT).show()
+                Log.e("WorkspaceActivity", "Database error: ${error.message}")
             }
         })
     }
@@ -91,6 +97,7 @@ class WorkspaceActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == CREATE_WORKSPACE_REQUEST_CODE && resultCode == RESULT_OK) {
+            Log.d("WorkspaceActivity", "New workspace created, refreshing list")
             fetchWorkspaces() // Refresh workspaces when a new one is created
         }
     }

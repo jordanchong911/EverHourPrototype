@@ -1,73 +1,75 @@
 package com.mobdeve.s11.santos.andreali.everhourprototype
 
-import android.app.Dialog
-import android.content.Context
+import android.app.AlertDialog
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
 import android.widget.Button
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.DialogFragment
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import androidx.fragment.app.DialogFragment
 
 class MemberRoleDialogFragment : DialogFragment() {
 
     interface OnRoleSetListener {
-        fun onRoleSet(email: String, role: String)
+        fun onRoleSet(email: String, role: String, firstName: String, lastName: String)
     }
 
     private var listener: OnRoleSetListener? = null
 
-    companion object {
-        private const val ARG_EMAIL = "email"
+    override fun onCreateDialog(savedInstanceState: Bundle?): AlertDialog {
+        val inflater = requireActivity().layoutInflater
+        val view = inflater.inflate(R.layout.member_role_ol, null)
 
-        fun newInstance(email: String): MemberRoleDialogFragment {
+        val roleEditText = view.findViewById<TextInputEditText>(R.id.etRole)
+        val setButton = view.findViewById<Button>(R.id.btnSetRoleName)
+
+        val email = arguments?.getString("EMAIL") ?: ""
+        val firstName = arguments?.getString("FIRST_NAME") ?: ""
+        val lastName = arguments?.getString("LAST_NAME") ?: ""
+
+        // Initialize the role EditText if needed
+        val initialRole = arguments?.getString("ROLE") ?: ""
+        roleEditText.setText(initialRole)
+
+        return AlertDialog.Builder(requireContext())
+            .setTitle("Set Member Role")
+            .setView(view)
+            .setPositiveButton("Set") { _, _ ->
+                val role = roleEditText.text.toString()
+                if (role.isNotEmpty()) {
+                    if (role.equals("Admin", ignoreCase = true)) {
+                        roleEditText.error = "Role 'Admin' is not allowed"
+                    } else {
+                        listener?.onRoleSet(email, role, firstName, lastName)
+                    }
+                } else {
+                    // Handle empty input, show error
+                    roleEditText.error = "Role cannot be empty"
+                }
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(email: String, role: String, firstName: String, lastName: String): MemberRoleDialogFragment {
             val fragment = MemberRoleDialogFragment()
-            val args = Bundle()
-            args.putString(ARG_EMAIL, email)
+            val args = Bundle().apply {
+                putString("EMAIL", email)
+                putString("ROLE", role)
+                putString("FIRST_NAME", firstName)
+                putString("LAST_NAME", lastName)
+            }
             fragment.arguments = args
             return fragment
         }
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        listener = context as? OnRoleSetListener
-        if (listener == null) {
-            throw ClassCastException("$context must implement OnRoleSetListener")
-        }
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val email = arguments?.getString(ARG_EMAIL) ?: ""
-
-        return activity?.let {
-            val builder = AlertDialog.Builder(it)
-            val inflater = requireActivity().layoutInflater
-            val view = inflater.inflate(R.layout.member_role_ol, null)
-
-            val tilRole = view.findViewById<TextInputLayout>(R.id.tilEmail)
-            val editRole = view.findViewById<TextInputEditText>(R.id.etRole)
-            val btnSetRole = view.findViewById<Button>(R.id.btnSetRoleName)
-
-            // Handle button click
-            btnSetRole.setOnClickListener {
-                val role = editRole.text.toString()
-                if (role.isNotBlank()) {
-                    listener?.onRoleSet(email, role)
-                    dismiss() // Dismiss the dialog after setting the role
-                } else {
-                    Toast.makeText(context, "Please enter a role", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            builder.setView(view)
-            builder.create()
-        } ?: throw IllegalStateException("Activity cannot be null")
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        listener = null
+    fun setOnRoleSetListener(listener: OnRoleSetListener) {
+        this.listener = listener
     }
 }

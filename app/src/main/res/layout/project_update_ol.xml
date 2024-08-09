@@ -3,19 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cvProjectUpdate"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_margin="5dp"
     android:padding="5dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cloProjectUpdate"
-        android:layout_width="330dp"
-        android:layout_height="300dp"
+        android:layout_width="match_parent"
+        android:layout_height="315dp"
         android:background="@drawable/gradient"
-        android:padding="10dp"
-        tools:ignore="TextSizeCheck"
-        tools:layout_editor_absoluteX="1dp">
+        android:padding="10dp">
 
         <TextView
             android:id="@+id/tvUpdate"
@@ -33,20 +31,24 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilName"
-            android:layout_width="300dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="50dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="10dp"
             android:background="@drawable/inputfields"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@+id/tvUpdate">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etName"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:hint="@string/dummy_project_name"
+                android:padding="8dp"
                 android:textColor="@color/blue3"
                 android:textColorHint="@color/blue3"
                 android:textStyle="italic"
@@ -55,20 +57,24 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilClient"
-            android:layout_width="300dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="110dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="10dp"
             android:background="@drawable/inputfields"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@+id/tilName">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etClient"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:hint="@string/dummy_client_name"
+                android:padding="8dp"
                 android:textColor="@color/blue3"
                 android:textColorHint="@color/blue3"
                 android:textStyle="italic"
@@ -77,20 +83,24 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilTeam"
-            android:layout_width="300dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="170dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="10dp"
             android:background="@drawable/inputfields"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@+id/tilClient">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etTeam"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:hint="@string/dummy_role_ic"
+                android:padding="8dp"
                 android:textColor="@color/blue3"
                 android:textColorHint="@color/blue3"
                 android:textStyle="italic"
@@ -101,7 +111,6 @@
             android:id="@+id/btnSetWorkSpName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
             android:background="@drawable/rounded_blue"
             android:text="@string/set"
             app:layout_constraintBottom_toBottomOf="parent"

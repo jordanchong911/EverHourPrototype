@@ -8,8 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.mobdeve.s11.santos.andreali.everhourprototype.Account.AccountActivity
-import com.mobdeve.s11.santos.andreali.everhourprototype.Workspaces.WorkspaceActivity
 import com.mobdeve.s11.santos.andreali.everhourprototype.databinding.ProjectOverviewBinding
 
 class ProjectsActivity : AppCompatActivity() {
@@ -19,7 +17,6 @@ class ProjectsActivity : AppCompatActivity() {
     private lateinit var workspaceId: String
     private lateinit var workspaceName: String
     private lateinit var projectAdapter: ProjectAdapter
-    private lateinit var userId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,12 +24,6 @@ class ProjectsActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         dbRef = FirebaseDatabase.getInstance().reference
-        userId = FirebaseAuth.getInstance().currentUser?.uid ?: run {
-            Log.e("ProjectsActivity", "User ID not found")
-            Toast.makeText(this, "User ID missing", Toast.LENGTH_SHORT).show()
-            finish()
-            return
-        }
 
         // Get workspace ID and name from the intent
         workspaceId = intent.getStringExtra("WORKSPACE_ID") ?: run {
@@ -80,14 +71,14 @@ class ProjectsActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        projectAdapter = ProjectAdapter(mutableListOf(), supportFragmentManager, workspaceId, this) // Pass context here
+        projectAdapter = ProjectAdapter(mutableListOf(), supportFragmentManager, workspaceId, this)
         binding.rvProjects.layoutManager = LinearLayoutManager(this)
         binding.rvProjects.adapter = projectAdapter
     }
 
     fun fetchProjects() {
-        // Updated path to include workspaces and userId
-        dbRef.child("workspaces").child(userId).child(workspaceId).child("projects").addValueEventListener(object : ValueEventListener {
+        // Corrected path to access projects under the workspaceId directly
+        dbRef.child("workspaces").child(workspaceId).child("projects").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val projectsList = mutableListOf<Project>()
                 for (projectSnapshot in snapshot.children) {
@@ -112,8 +103,8 @@ class ProjectsActivity : AppCompatActivity() {
     fun updateProject(project: Project, name: String, client: String, roleIC: String) {
         val updatedProject = project.copy(name = name, client = client, roleIC = roleIC)
 
-        // Updated path to include workspaces and userId
-        dbRef.child("workspaces").child(userId).child(workspaceId).child("projects").child(project.projectID).setValue(updatedProject)
+        // Corrected path to update project directly under the workspaceId
+        dbRef.child("workspaces").child(workspaceId).child("projects").child(project.projectID).setValue(updatedProject)
             .addOnSuccessListener {
                 Toast.makeText(this, "Project updated successfully.", Toast.LENGTH_SHORT).show()
             }
@@ -123,8 +114,8 @@ class ProjectsActivity : AppCompatActivity() {
     }
 
     fun deleteProject(projectID: String) {
-        // Updated path to include workspaces and userId
-        dbRef.child("workspaces").child(userId).child(workspaceId).child("projects").child(projectID).removeValue()
+        // Corrected path to delete project directly under the workspaceId
+        dbRef.child("workspaces").child(workspaceId).child("projects").child(projectID).removeValue()
             .addOnSuccessListener {
                 Toast.makeText(this, "Project deleted successfully.", Toast.LENGTH_SHORT).show()
             }

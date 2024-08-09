@@ -37,35 +37,33 @@ class SignUpActivity : AppCompatActivity() {
                 return@setOnClickListener
             } else {
                 if (password == confirmPassword) {
-
                     auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this) { task ->
-                            if (task.isSuccessful) {
-                                val userId = auth.currentUser?.uid ?: return@addOnCompleteListener
+                        if (task.isSuccessful) {
+                            val userId = auth.currentUser?.uid ?: return@addOnCompleteListener
 
-                                val user = UserModel(
-                                    fname = fname,
-                                    lname = lname,
-                                    email = email
-                                )
+                            val user = UserModel(
+                                fname = fname,
+                                lname = lname,
+                                email = email
+                            )
 
-                                dbRef.child(userId).setValue(user)
-                                    .addOnSuccessListener {
-                                        Toast.makeText(this, "Registration successful!", Toast.LENGTH_SHORT).show()
-                                    }
-                                    .addOnFailureListener {
-                                        Toast.makeText(this, "Failed to save user to database: ${it.message}", Toast.LENGTH_SHORT).show()
-                                    }
+                            dbRef.child(userId).setValue(user)
+                                .addOnSuccessListener {
+                                    Toast.makeText(this, "Registration successful!", Toast.LENGTH_SHORT).show()
+                                }
+                                .addOnFailureListener {
+                                    Toast.makeText(this, "Failed to save user to database: ${it.message}", Toast.LENGTH_SHORT).show()
+                                }
 
-                                val intent = Intent(this, SignInActivity::class.java)
-                                startActivity(intent)
-                                finish()
-                            } else {
-                                Toast.makeText(this, "Registration failed: ${task.exception?.message} !", Toast.LENGTH_SHORT).show()
-                            }
+                            val intent = Intent(this, SignInActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            Toast.makeText(this, "Registration failed: ${task.exception?.message} !", Toast.LENGTH_SHORT).show()
                         }
+                    }
                 } else {
                     Toast.makeText(this, "Passwords do not match.", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
                 }
             }
         }
