@@ -1,13 +1,20 @@
 package com.mobdeve.s11.santos.andreali.everhourprototype
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 
 class EntryTimerActivity : AppCompatActivity() {
 
@@ -19,6 +26,11 @@ class EntryTimerActivity : AppCompatActivity() {
     private val handler = Handler()
     private var elapsedTime: Long = 0 // Time elapsed in milliseconds
     private lateinit var updateTimerRunnable: Runnable
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    companion object {
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +40,7 @@ class EntryTimerActivity : AppCompatActivity() {
         ibPausePlay = findViewById(R.id.ibPausePlay)
         ibRestart = findViewById(R.id.ibRestart)
         cloTimer = findViewById(R.id.cloTimer)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         // Retrieve the passed data
         val timeEntryId = intent.getStringExtra("TIME_ENTRY_ID")
@@ -44,7 +57,7 @@ class EntryTimerActivity : AppCompatActivity() {
             if (isRunning) {
                 pauseTimer()
             } else {
-                startTimer()
+                checkLocationPermissionAndStartTimer()
             }
         }
 
@@ -69,6 +82,56 @@ class EntryTimerActivity : AppCompatActivity() {
         findViewById<ImageView>(R.id.ivAccount).setOnClickListener {
             val intent = Intent(this, AccountActivity::class.java)
             startActivity(intent)
+        }
+    }
+
+    private fun checkLocationPermissionAndStartTimer() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Request location permission
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
+        } else {
+            // Permission already granted, get the location
+            getLocationAndStartTimer()
+        }
+    }
+
+    private fun getLocationAndStartTimer() {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Request location permissions
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
+            return
+        }
+        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+            if (location != null) {
+                // Log or use the location as needed
+                val latitude = location.latitude
+                val longitude = location.longitude
+                // Do something with the location (e.g., save it or display it)
+            }
+            // Start the timer after getting the location
+            startTimer()
+        }.addOnFailureListener {
+            // Handle location retrieval failure
+            startTimer() // Still starts the timer even if location retrieval fails
         }
     }
 
@@ -119,5 +182,22 @@ class EntryTimerActivity : AppCompatActivity() {
         val seconds = (elapsedTime / 1000 % 60)
         val timeFormatted = String.format("%02d:%02d:%02d", hours, minutes, seconds)
         tvTime.text = timeFormatted
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, get the location and start the timer
+                getLocationAndStartTimer()
+            } else {
+                // Permission denied
+                Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }
