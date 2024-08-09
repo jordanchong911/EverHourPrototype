@@ -67,12 +67,11 @@
         android:id="@+id/tilFirstname"
         android:layout_width="160dp"
         android:layout_height="48dp"
-        android:layout_marginStart="40dp"
         android:layout_marginTop="350dp"
         android:layout_marginEnd="11dp"
         android:background="@drawable/inputfields"
         app:layout_constraintEnd_toStartOf="@+id/tilLastname"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/etvEmail"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -90,10 +89,9 @@
         android:id="@+id/tilLastname"
         android:layout_width="160dp"
         android:layout_height="48dp"
-        android:layout_marginStart="10dp"
         android:layout_marginTop="350dp"
         android:background="@drawable/inputfields"
-        app:layout_constraintStart_toEndOf="@+id/tilFirstname"
+        app:layout_constraintEnd_toEndOf="@+id/etvEmail"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
