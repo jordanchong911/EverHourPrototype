@@ -16,7 +16,7 @@ class TimeEntriesAdapter(
     private val timeEntries: MutableList<TimeEntry>,
     private val fragmentManager: FragmentManager,
     private val projectId: String,
-    private val projectName: String,  // projectName is now required
+    private val projectName: String,
     private val workspaceId: String,
     private val context: Context
 ) : RecyclerView.Adapter<TimeEntriesAdapter.TimeEntryViewHolder>() {
@@ -39,12 +39,10 @@ class TimeEntriesAdapter(
             binding.tvTime.text = timeEntry.timeElapsed
             binding.tvRate.text = timeEntry.rate.toString()
 
-            // Set the click listener for the three dots
             binding.ivDots.setOnClickListener {
                 showOptionsDialog(timeEntry)
             }
 
-            // Set the click listener for the record button
             binding.ibRecord.setOnClickListener {
                 navigateToEntryTimerActivity(timeEntry)
             }
@@ -81,18 +79,20 @@ class TimeEntriesAdapter(
                 putExtra("TIME_ENTRY_ID", timeEntry.timeEntryID)
                 putExtra("PROJECT_ID", projectId)
                 putExtra("WORKSPACE_ID", workspaceId)
-                putExtra("PROJECT_NAME", projectName)   // Pass the project name
-                putExtra("ENTRY_NAME", timeEntry.name)  // Pass the entry name
+                putExtra("PROJECT_NAME", projectName)
+                putExtra("ENTRY_NAME", timeEntry.name)
             }
             context.startActivity(intent)
         }
 
         private fun updateTimeEntryInFirebase(timeEntry: TimeEntry) {
-            val databaseReference = FirebaseDatabase.getInstance().getReference("time_entries")
-                .child(projectId).child(timeEntry.timeEntryID)
+            val databaseReference = FirebaseDatabase.getInstance().getReference("workspaces")
+                .child(workspaceId).child("projects").child(projectId)
+                .child("time_entries").child(timeEntry.timeEntryID)
             databaseReference.setValue(timeEntry).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(binding.root.context, "Time entry updated successfully", Toast.LENGTH_SHORT).show()
+                    notifyItemChanged(adapterPosition)
                 } else {
                     Toast.makeText(binding.root.context, "Failed to update time entry", Toast.LENGTH_SHORT).show()
                 }
@@ -100,8 +100,9 @@ class TimeEntriesAdapter(
         }
 
         private fun deleteTimeEntryFromFirebase(timeEntryID: String) {
-            val databaseReference = FirebaseDatabase.getInstance().getReference("time_entries")
-                .child(projectId).child(timeEntryID)
+            val databaseReference = FirebaseDatabase.getInstance().getReference("workspaces")
+                .child(workspaceId).child("projects").child(projectId)
+                .child("time_entries").child(timeEntryID)
             databaseReference.removeValue().addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(binding.root.context, "Time entry deleted successfully", Toast.LENGTH_SHORT).show()

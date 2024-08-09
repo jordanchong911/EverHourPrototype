@@ -1,13 +1,17 @@
 package com.mobdeve.s11.santos.andreali.everhourprototype
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.DialogFragment
+import com.mobdeve.s11.santos.andreali.everhourprototype.Account.AccountActivity
 import com.mobdeve.s11.santos.andreali.everhourprototype.R
+import com.mobdeve.s11.santos.andreali.everhourprototype.Workspaces.WorkspaceActivity
 
 class EntryTimerActivity : AppCompatActivity() {
 
@@ -48,6 +52,19 @@ class EntryTimerActivity : AppCompatActivity() {
 
         cloTimer.setOnClickListener {
             showClockOutDialog(timeEntryId, projectId, workspaceId, entryName)
+        }
+
+        // Navbar Buttons
+        findViewById<ImageView>(R.id.ivHome).setOnClickListener {
+            val intent = Intent(this, WorkspaceActivity::class.java)
+            startActivity(intent)
+        }
+        findViewById<ImageView>(R.id.ivReport).setOnClickListener {
+            // TODO: place report activity here
+        }
+        findViewById<ImageView>(R.id.ivAccount).setOnClickListener {
+            val intent = Intent(this, AccountActivity::class.java)
+            startActivity(intent)
         }
     }
 

@@ -63,7 +63,12 @@ class ProjectDetailsActivity : AppCompatActivity() {
         }
 
         binding.btnTimeEntries.setOnClickListener {
-            checkTimeEntries()
+            val intent = Intent(this@ProjectDetailsActivity, TimeEntriesActivity::class.java).apply {
+                putExtra("PROJECT_ID", projectId)
+                putExtra("WORKSPACE_ID", workspaceId) // Pass workspaceId here
+                putExtra("PROJECT_NAME", binding.tvProjectDetails.text.toString()) // Pass project name
+            }
+            startActivity(intent)
         }
     }
 
@@ -91,63 +96,4 @@ class ProjectDetailsActivity : AppCompatActivity() {
         // Populate other fields with project details
     }
 
-    private fun checkTimeEntries() {
-        dbRef.child("workspaces").child(userId).child(workspaceId).child("projects").child(projectId).child("time_entries").addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    // Time entries exist, launch TimeEntriesActivity
-                    val intent = Intent(this@ProjectDetailsActivity, TimeEntriesActivity::class.java).apply {
-                        putExtra("PROJECT_ID", projectId)
-                        putExtra("WORKSPACE_ID", workspaceId) // Pass workspaceId here
-                        putExtra("PROJECT_NAME", binding.tvProjectDetails.text.toString()) // Pass project name
-                    }
-                    startActivity(intent)
-                } else {
-                    // No time entries, show the entry prompt dialog
-                    showEntryPromptDialog()
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(this@ProjectDetailsActivity, "Failed to check time entries: ${error.message}", Toast.LENGTH_SHORT).show()
-            }
-        })
-    }
-
-    private fun showEntryPromptDialog() {
-        val entryPromptDialog = EntryPromptDialogFragment()
-        entryPromptDialog.setOnNameEnteredListener { name ->
-            showEntryRateDialog(name)
-        }
-        entryPromptDialog.show(supportFragmentManager, "EntryPromptDialogFragment")
-    }
-
-    private fun showEntryRateDialog(entryName: String) {
-        val entryRateDialog = EntryRateDialogFragment()
-        entryRateDialog.setOnRateEnteredListener { rate ->
-            saveTimeEntry(entryName, rate)
-        }
-        entryRateDialog.show(supportFragmentManager, "EntryRateDialogFragment")
-    }
-
-    private fun saveTimeEntry(entryName: String, entryRate: Int) {
-        val timeEntryID = dbRef.child("workspaces").child(userId).child(workspaceId).child("projects").child(projectId).child("time_entries").push().key ?: return
-        val timeEntry = TimeEntry(
-            workplaceID = workspaceId,
-            projectID = projectId,
-            timeEntryID = timeEntryID,
-            name = entryName,
-            timeElapsed = "00:00:00", // Default start time
-            rate = entryRate
-        )
-        dbRef.child("workspaces").child(userId).child(workspaceId).child("projects").child(projectId).child("time_entries").child(timeEntryID).setValue(timeEntry)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Toast.makeText(this, "Time entry added successfully", Toast.LENGTH_SHORT).show()
-                    // Optionally, you can navigate to the TimeEntriesActivity or update the UI
-                } else {
-                    Toast.makeText(this, "Failed to add time entry", Toast.LENGTH_SHORT).show()
-                }
-            }
-    }
 }
