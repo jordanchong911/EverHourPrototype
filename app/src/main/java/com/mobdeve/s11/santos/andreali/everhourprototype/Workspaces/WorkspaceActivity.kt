@@ -1,4 +1,5 @@
-package com.mobdeve.s11.santos.andreali.everhourprototype
+package com.mobdeve.s11.santos.andreali.everhourprototype.Workspaces
+
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.mobdeve.s11.santos.andreali.everhourprototype.databinding.WorkspaceOverviewBinding
+import com.mobdeve.s11.santos.andreali.everhourprototype.Account.AccountActivity
+import com.mobdeve.s11.santos.andreali.everhourprototype.Workspace
+import com.mobdeve.s11.santos.andreali.everhourprototype.WorkspaceAdapter
+import com.mobdeve.s11.santos.andreali.everhourprototype.WorkspaceCreateActivity
+import com.mobdeve.s11.santos.andreali.everhourprototype.WorkspaceDetailsActivity
 
 class WorkspaceActivity : AppCompatActivity() {
 

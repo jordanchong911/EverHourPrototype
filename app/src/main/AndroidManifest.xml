@@ -12,7 +12,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EverHourPrototype"
         tools:targetApi="31">
-        <!-- WorkspaceCreateActivity -->
+
+        <activity
+            android:name=".Account.AccountActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".Account.AccountEditActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".AccountPwActivity"
+            android:exported="false"/>
         <activity
             android:name=".MembersActivity"
             android:exported="false"/>
@@ -26,7 +35,7 @@
             android:name="WorkspaceActivity"
             android:exported="false" />
         <activity
-            android:name="ProjectsActivity"
+            android:name=".Projects.ProjectsActivity"
             android:exported="false"/>
         <activity
             android:name=".ProjectCreateActivity"

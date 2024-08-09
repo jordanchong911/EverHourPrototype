@@ -1,4 +1,4 @@
-package com.mobdeve.s11.santos.andreali.everhourprototype
+package com.mobdeve.s11.santos.andreali.everhourprototype.Account
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,6 +7,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.mobdeve.s11.santos.andreali.everhourprototype.AccountPwActivity
+import com.mobdeve.s11.santos.andreali.everhourprototype.MainActivity
+import com.mobdeve.s11.santos.andreali.everhourprototype.Workspaces.WorkspaceActivity
 import com.mobdeve.s11.santos.andreali.everhourprototype.databinding.AccountSettingsBinding
 
 class AccountActivity : AppCompatActivity() {

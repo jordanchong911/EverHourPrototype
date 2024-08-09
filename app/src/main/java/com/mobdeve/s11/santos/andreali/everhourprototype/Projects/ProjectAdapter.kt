@@ -5,6 +5,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.mobdeve.s11.santos.andreali.everhourprototype.Projects.ProjectsActivity
 import com.mobdeve.s11.santos.andreali.everhourprototype.databinding.ProjectCardBinding
 
 class ProjectAdapter(
