@@ -81,6 +81,7 @@ class TimeEntriesAdapter(
                 putExtra("WORKSPACE_ID", workspaceId)
                 putExtra("PROJECT_NAME", projectName)
                 putExtra("ENTRY_NAME", timeEntry.name)
+                putExtra("TIME_ELAPSED", timeEntry.timeElapsed)
             }
             context.startActivity(intent)
         }

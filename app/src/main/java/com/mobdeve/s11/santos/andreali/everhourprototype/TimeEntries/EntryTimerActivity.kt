@@ -48,10 +48,14 @@ class EntryTimerActivity : AppCompatActivity() {
         val workspaceId = intent.getStringExtra("WORKSPACE_ID")
         val projectName = intent.getStringExtra("PROJECT_NAME")
         val entryName = intent.getStringExtra("ENTRY_NAME")
+        val elapsedTimeString = intent.getStringExtra("TIME_ELAPSED").toString()
+        elapsedTime = convertTimeStringToMillis(elapsedTimeString)  // Convert string to milliseconds
 
         // Set the project and entry name
         findViewById<TextView>(R.id.tvEntryTimer).text = projectName
         findViewById<TextView>(R.id.tvEntry).text = entryName
+
+        updateTimerText()
 
         ibPausePlay.setOnClickListener {
             if (isRunning) {
@@ -62,7 +66,7 @@ class EntryTimerActivity : AppCompatActivity() {
         }
 
         cloTimer.setOnClickListener {
-            showClockOutDialog(timeEntryId, projectId, workspaceId, entryName)
+            showClockOutDialog(timeEntryId, projectId, workspaceId, entryName, projectName)
         }
 
         ibRestart.setOnClickListener {
@@ -135,7 +139,7 @@ class EntryTimerActivity : AppCompatActivity() {
         }
     }
 
-    private fun showClockOutDialog(timeEntryId: String?, projectId: String?, workspaceId: String?, entryName: String?) {
+    private fun showClockOutDialog(timeEntryId: String?, projectId: String?, workspaceId: String?, entryName: String?, projectName: String?) {
         val dialog = ClockOutDialogFragment().apply {
             arguments = Bundle().apply {
                 putString("TIME_ENTRY_ID", timeEntryId)
@@ -143,6 +147,7 @@ class EntryTimerActivity : AppCompatActivity() {
                 putString("PROJECT_ID", projectId)
                 putString("WORKSPACE_ID", workspaceId)
                 putString("ENTRY_NAME", entryName)
+                putString("PROJECT_NAME", projectName)
             }
         }
         dialog.show(supportFragmentManager, "ClockOutDialog")
@@ -199,5 +204,18 @@ class EntryTimerActivity : AppCompatActivity() {
                 Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    // Helper function to convert time string to milliseconds
+    private fun convertTimeStringToMillis(timeString: String): Long {
+        val parts = timeString.split(":")
+        if (parts.size == 3) {
+            val hours = parts[0].toIntOrNull() ?: 0
+            val minutes = parts[1].toIntOrNull() ?: 0
+            val seconds = parts[2].toIntOrNull() ?: 0
+
+            return (hours * 3600 + minutes * 60 + seconds) * 1000L
+        }
+        return 0L
     }
 }
