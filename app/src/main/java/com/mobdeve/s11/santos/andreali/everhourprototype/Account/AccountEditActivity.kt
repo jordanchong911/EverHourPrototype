@@ -2,7 +2,6 @@ package com.mobdeve.s11.santos.andreali.everhourprototype.Account
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -41,18 +40,15 @@ class AccountEditActivity : AppCompatActivity() {
                         binding.tvEmail.text = email
                     } else {
                         Toast.makeText(this@AccountEditActivity, "Failed to load user data", Toast.LENGTH_SHORT).show()
-                        Log.e("AccountEditActivity", "Failed to load user data: firstName, lastName, or email is null")
                     }
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {
                     Toast.makeText(this@AccountEditActivity, "Database error: ${databaseError.message}", Toast.LENGTH_SHORT).show()
-                    Log.e("AccountEditActivity", "Database error: ${databaseError.message}")
                 }
             })
         } else {
             Toast.makeText(this, "No authenticated user", Toast.LENGTH_SHORT).show()
-            Log.e("AccountEditActivity", "No authenticated user")
         }
 
         binding.btnSaveChanges.setOnClickListener {
@@ -83,7 +79,6 @@ class AccountEditActivity : AppCompatActivity() {
 
                     override fun onCancelled(databaseError: DatabaseError) {
                         Toast.makeText(this@AccountEditActivity, "Database error: ${databaseError.message}", Toast.LENGTH_SHORT).show()
-                        Log.e("AccountEditActivity", "Database error: ${databaseError.message}")
                     }
                 })
         }
@@ -94,10 +89,10 @@ class AccountEditActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
-        binding.ivReport.setOnClickListener{
+        binding.ivReport.setOnClickListener {
             //TODO: place report activity here
         }
-        binding.ivAccount.setOnClickListener{
+        binding.ivAccount.setOnClickListener {
             val intent = Intent(this, AccountActivity::class.java)
             startActivity(intent)
             finish()
@@ -109,43 +104,33 @@ class AccountEditActivity : AppCompatActivity() {
 
         val userId = currentUser.uid
 
-        // Update Firebase Authentication email
-        currentUser.updateEmail(email).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                // Update Firebase Authentication profile
-                val profileUpdates = UserProfileChangeRequest.Builder()
-                    .setDisplayName("$firstName $lastName")
-                    .build()
+        // Update Firebase Authentication profile (without email, since it's deprecated)
+        val profileUpdates = UserProfileChangeRequest.Builder()
+            .setDisplayName("$firstName $lastName")
+            .build()
 
-                currentUser.updateProfile(profileUpdates).addOnCompleteListener { profileTask ->
-                    if (profileTask.isSuccessful) {
-                        // Update Realtime Database
-                        val userUpdates = mapOf(
-                            "fname" to firstName,
-                            "lname" to lastName,
-                            "email" to email
-                        )
+        currentUser.updateProfile(profileUpdates).addOnCompleteListener { profileTask ->
+            if (profileTask.isSuccessful) {
+                // Update Realtime Database
+                val userUpdates = mapOf(
+                    "fname" to firstName,
+                    "lname" to lastName,
+                    "email" to email
+                )
 
-                        dbRef.child("users").child(userId).updateChildren(userUpdates)
-                            .addOnCompleteListener { dbTask ->
-                                if (dbTask.isSuccessful) {
-                                    Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show()
-                                    val intent = Intent(this, AccountActivity::class.java)
-                                    startActivity(intent)
-                                    finish()
-                                } else {
-                                    Toast.makeText(this, "Failed to update profile in database", Toast.LENGTH_SHORT).show()
-                                    Log.e("AccountEditActivity", "Failed to update profile in database")
-                                }
-                            }
-                    } else {
-                        Toast.makeText(this, "Failed to update profile", Toast.LENGTH_SHORT).show()
-                        Log.e("AccountEditActivity", "Failed to update profile")
+                dbRef.child("users").child(userId).updateChildren(userUpdates)
+                    .addOnCompleteListener { dbTask ->
+                        if (dbTask.isSuccessful) {
+                            Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show()
+                            val intent = Intent(this, AccountActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            Toast.makeText(this, "Failed to update profile in database", Toast.LENGTH_SHORT).show()
+                        }
                     }
-                }
             } else {
-                Toast.makeText(this, "Failed to update email", Toast.LENGTH_SHORT).show()
-                Log.e("AccountEditActivity", "Failed to update email")
+                Toast.makeText(this, "Failed to update profile", Toast.LENGTH_SHORT).show()
             }
         }
     }
