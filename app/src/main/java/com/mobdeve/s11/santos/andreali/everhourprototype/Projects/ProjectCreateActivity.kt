@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.mobdeve.s11.santos.andreali.everhourprototype.Projects.ProjectsActivity
 import com.mobdeve.s11.santos.andreali.everhourprototype.databinding.ProjectCreateBinding
 
 class ProjectCreateActivity : AppCompatActivity() {
@@ -71,7 +72,7 @@ class ProjectCreateActivity : AppCompatActivity() {
         }
 
         // Reference to the Firebase path
-        val newProjectRef = dbRef.child("workspaces").child(userId).child(workspaceId).child("projects").push()
+        val newProjectRef = dbRef.child("workspaces").child(workspaceId).child("projects").push()
 
         // Create a Project object
         val project = Project(

@@ -5,7 +5,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.mobdeve.s11.santos.andreali.everhourprototype.ProjectsActivity
+import com.mobdeve.s11.santos.andreali.everhourprototype.Projects.ProjectsActivity
 import com.mobdeve.s11.santos.andreali.everhourprototype.databinding.ProjectCardBinding
 
 class ProjectAdapter(
@@ -48,7 +48,7 @@ class ProjectAdapter(
                 context.startActivity(intent)
             }
 
-            // Handle the click event for the dots
+            // Handle the click event for the dots (options menu)
             binding.ivDots.setOnClickListener {
                 val dialog = DeleteProjectDialogFragment(workspaceId, project.projectID)
                 dialog.setOnProjectDeletedListener(object : DeleteProjectDialogFragment.OnProjectDeletedListener {
@@ -62,3 +62,4 @@ class ProjectAdapter(
         }
     }
 }
+

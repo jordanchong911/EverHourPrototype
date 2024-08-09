@@ -93,7 +93,7 @@ class TimeEntriesActivity : AppCompatActivity() {
     }
 
     private fun fetchTimeEntries() {
-        dbRef.child("workspaces").child(userId).child(workspaceId)
+        dbRef.child("workspaces").child(workspaceId)
             .child("projects").child(projectId).child("time_entries")
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -133,7 +133,7 @@ class TimeEntriesActivity : AppCompatActivity() {
     }
 
     private fun saveTimeEntry(entryName: String, entryRate: Int) {
-        val timeEntryID = dbRef.child("workspaces").child(userId).child(workspaceId)
+        val timeEntryID = dbRef.child("workspaces").child(workspaceId)
             .child("projects").child(projectId).child("time_entries").push().key ?: return
         val timeEntry = TimeEntry(
             workplaceID = workspaceId,
@@ -143,7 +143,7 @@ class TimeEntriesActivity : AppCompatActivity() {
             timeElapsed = "00:00:00", // Default start time
             rate = entryRate
         )
-        dbRef.child("workspaces").child(userId).child(workspaceId)
+        dbRef.child("workspaces").child(workspaceId)
             .child("projects").child(projectId).child("time_entries").child(timeEntryID)
             .setValue(timeEntry)
             .addOnCompleteListener { task ->

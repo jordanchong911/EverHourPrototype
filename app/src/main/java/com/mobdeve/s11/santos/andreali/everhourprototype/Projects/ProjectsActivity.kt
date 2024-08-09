@@ -1,4 +1,4 @@
-package com.mobdeve.s11.santos.andreali.everhourprototype
+package com.mobdeve.s11.santos.andreali.everhourprototype.Projects
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,8 +6,12 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.mobdeve.s11.santos.andreali.everhourprototype.AccountActivity
+import com.mobdeve.s11.santos.andreali.everhourprototype.Project
+import com.mobdeve.s11.santos.andreali.everhourprototype.ProjectAdapter
+import com.mobdeve.s11.santos.andreali.everhourprototype.ProjectCreateActivity
+import com.mobdeve.s11.santos.andreali.everhourprototype.WorkspaceActivity
 import com.mobdeve.s11.santos.andreali.everhourprototype.databinding.ProjectOverviewBinding
 
 class ProjectsActivity : AppCompatActivity() {
@@ -124,3 +128,4 @@ class ProjectsActivity : AppCompatActivity() {
             }
     }
 }
+
