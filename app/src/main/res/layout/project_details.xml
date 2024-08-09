@@ -160,7 +160,7 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="420dp"
-        android:text="@string/project_count"
+        android:text="@string/task_count"
         android:textColor="@color/blue1"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"

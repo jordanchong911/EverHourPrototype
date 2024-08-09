@@ -93,7 +93,8 @@ class ProjectDetailsActivity : AppCompatActivity() {
         binding.tvProjectDetails.text = project.name
         binding.tvClientName.text = project.client
         binding.tvRoleIC.text = project.roleIC
-        // Populate other fields with project details
+        //binding.tvTrackedNum.text =
+        //binding.tvCountNum.text =
     }
 
 }

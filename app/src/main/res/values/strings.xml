@@ -66,6 +66,7 @@
     <string name="dummy_entries_count">2048</string>
     <string name="dummy_time_entry_rate">Rate</string>
     <string name="time_entries">Time Entries</string>
+    <string name="task_count">Time Entry Count</string>
 
     <string name="invite">Invite a new Member</string>
     <string name="create_project">Create Project</string>

@@ -80,6 +80,8 @@ class ProjectCreateActivity : AppCompatActivity() {
             name = projectName,
             client = clientName,
             roleIC = roleIC,
+            projectHrs = 0,
+            projectTasks = 0,
             workspaceId = workspaceId,
             projectID = newProjectRef.key ?: ""
         )

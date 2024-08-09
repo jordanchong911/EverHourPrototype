@@ -45,8 +45,10 @@ class EntryTimerActivity : AppCompatActivity() {
         ibPausePlay.setOnClickListener {
             if (isRunning) {
                 pauseTimer()
+                ibPausePlay.setImageResource(R.drawable.play_circle_v2)
             } else {
                 startTimer()
+                ibPausePlay.setImageResource(R.drawable.pause_circle)
             }
         }
 
