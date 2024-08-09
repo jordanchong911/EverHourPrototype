@@ -93,8 +93,8 @@ class ProjectDetailsActivity : AppCompatActivity() {
         binding.tvProjectDetails.text = project.name
         binding.tvClientName.text = project.client
         binding.tvRoleIC.text = project.roleIC
-        //binding.tvTrackedNum.text =
-        //binding.tvCountNum.text =
+        //TODO: binding.tvTrackedNum.text =
+        //TODO: binding.tvCountNum.text =
     }
 
 }
