@@ -17,6 +17,7 @@ class EntryTimerActivity : AppCompatActivity() {
 
     private lateinit var tvTime: TextView
     private lateinit var ibPausePlay: ImageButton
+    private lateinit var ibRestart: ImageButton
     private lateinit var cloTimer: ConstraintLayout
     private var isRunning = false
     private val handler = Handler()
@@ -29,6 +30,7 @@ class EntryTimerActivity : AppCompatActivity() {
 
         tvTime = findViewById(R.id.tvTime)
         ibPausePlay = findViewById(R.id.ibPausePlay)
+        ibRestart = findViewById(R.id.ibRestart)
         cloTimer = findViewById(R.id.cloTimer)
 
         // Retrieve the passed data
@@ -45,15 +47,19 @@ class EntryTimerActivity : AppCompatActivity() {
         ibPausePlay.setOnClickListener {
             if (isRunning) {
                 pauseTimer()
-                ibPausePlay.setImageResource(R.drawable.play_circle_v2)
             } else {
                 startTimer()
-                ibPausePlay.setImageResource(R.drawable.pause_circle)
             }
         }
 
         cloTimer.setOnClickListener {
             showClockOutDialog(timeEntryId, projectId, workspaceId, entryName)
+        }
+
+        ibRestart.setOnClickListener {
+            isRunning = false
+            elapsedTime = 0
+            updateTimerText()
         }
 
         // Navbar Buttons
@@ -86,12 +92,13 @@ class EntryTimerActivity : AppCompatActivity() {
     fun stopTimer() {
         if (isRunning) {
             pauseTimer()
+            ibPausePlay.setImageResource(R.drawable.play_circle_v2) // Set to play icon when stopped
         }
     }
 
     private fun startTimer() {
         isRunning = true
-        ibPausePlay.setImageResource(R.drawable.pause_circle_v2) // Set to pause icon when running
+        ibPausePlay.setImageResource(R.drawable.pause_circle) // Set to pause icon when running
 
         updateTimerRunnable = object : Runnable {
             override fun run() {
