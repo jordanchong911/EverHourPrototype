@@ -11,6 +11,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.mobdeve.s11.santos.andreali.everhourprototype.Account.AccountActivity
+import com.mobdeve.s11.santos.andreali.everhourprototype.Workspaces.WorkspaceActivity
 import com.mobdeve.s11.santos.andreali.everhourprototype.databinding.ProjectDetailsBinding
 
 class ProjectDetailsActivity : AppCompatActivity() {

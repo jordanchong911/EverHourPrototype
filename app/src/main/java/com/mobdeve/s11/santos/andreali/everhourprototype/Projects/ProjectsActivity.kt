@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.mobdeve.s11.santos.andreali.everhourprototype.Account.AccountActivity
+import com.mobdeve.s11.santos.andreali.everhourprototype.Workspaces.WorkspaceActivity
 import com.mobdeve.s11.santos.andreali.everhourprototype.databinding.ProjectOverviewBinding
 
 class ProjectsActivity : AppCompatActivity() {
