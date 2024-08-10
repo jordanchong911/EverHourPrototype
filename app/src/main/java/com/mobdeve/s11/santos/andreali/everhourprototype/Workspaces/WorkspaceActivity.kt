@@ -62,36 +62,26 @@ class WorkspaceActivity : AppCompatActivity() {
 
     // Fetch workspaces and update the RecyclerView
     fun fetchWorkspaces() {
-        // Use the root node for workspaces if there is no user ID in the path
         val dbRef = FirebaseDatabase.getInstance().reference.child("workspaces")
 
-        dbRef.addListenerForSingleValueEvent(object : ValueEventListener {
+        dbRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val workspaces = mutableListOf<Workspace>()
                 for (workspaceSnapshot in snapshot.children) {
                     val workspace = workspaceSnapshot.getValue(Workspace::class.java)
-                    Log.d("WorkspaceActivity", "Fetched workspace data: $workspace")
                     if (workspace != null) {
-                        // Add the workspace to the list
                         workspaces.add(workspace)
-                    } else {
-                        Log.d("WorkspaceActivity", "Workspace is null")
                     }
                 }
-                if (workspaces.isEmpty()) {
-                    Log.d("WorkspaceActivity", "No workspaces found")
-                }
-                // Update the adapter with the fetched workspaces
                 workspaceAdapter.updateData(workspaces)
-                Log.d("WorkspaceActivity", "Updated adapter with ${workspaces.size} workspaces")
             }
 
             override fun onCancelled(error: DatabaseError) {
                 Toast.makeText(this@WorkspaceActivity, "Failed to load workspaces: ${error.message}", Toast.LENGTH_SHORT).show()
-                Log.e("WorkspaceActivity", "Database error: ${error.message}")
             }
         })
     }
+
 
     // Handle result from WorkspaceCreateActivity
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
+import android.widget.Toast
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import androidx.fragment.app.DialogFragment
@@ -32,26 +33,27 @@ class MemberRoleDialogFragment : DialogFragment() {
         val initialRole = arguments?.getString("ROLE") ?: ""
         roleEditText.setText(initialRole)
 
-        return AlertDialog.Builder(requireContext())
-            .setTitle("Set Member Role")
+        val dialog = AlertDialog.Builder(requireContext())
             .setView(view)
-            .setPositiveButton("Set") { _, _ ->
-                val role = roleEditText.text.toString()
-                if (role.isNotEmpty()) {
-                    if (role.equals("Admin", ignoreCase = true)) {
-                        roleEditText.error = "Role 'Admin' is not allowed"
-                    } else {
-                        listener?.onRoleSet(email, role, firstName, lastName)
-                    }
-                } else {
-                    // Handle empty input, show error
-                    roleEditText.error = "Role cannot be empty"
-                }
-            }
-            .setNegativeButton("Cancel") { dialog, _ ->
-                dialog.dismiss()
-            }
             .create()
+
+        // Set up the button click listener
+        setButton.setOnClickListener {
+            val role = roleEditText.text.toString()
+            if (role.isNotEmpty()) {
+                if (role.equals("Admin", ignoreCase = true)) {
+                    roleEditText.error = "Role 'Admin' is not allowed"
+                } else {
+                    listener?.onRoleSet(email, role, firstName, lastName)
+                    dialog.dismiss() // Dismiss the dialog after setting the role
+                }
+            } else {
+                // Handle empty input, show error
+                roleEditText.error = "Role cannot be empty"
+            }
+        }
+
+        return dialog
     }
 
     companion object {

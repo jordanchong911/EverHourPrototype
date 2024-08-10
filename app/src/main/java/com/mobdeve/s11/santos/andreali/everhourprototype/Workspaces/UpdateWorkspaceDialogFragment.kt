@@ -52,7 +52,7 @@ class UpdateWorkspaceDialogFragment : DialogFragment() {
     private fun updateWorkspaceName(workspaceId: String, newName: String) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val workspaceRef = FirebaseDatabase.getInstance().reference
-            .child("workspaces").child(userId).child(workspaceId)
+            .child("workspaces").child(workspaceId)
 
         workspaceRef.child("name").setValue(newName).addOnCompleteListener { task ->
             if (task.isSuccessful) {
