@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
+import android.os.SystemClock
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -25,6 +26,7 @@ class EntryTimerActivity : AppCompatActivity() {
     private var isRunning = false
     private val handler = Handler()
     private var elapsedTime: Long = 0 // Time elapsed in milliseconds
+    private var startTime: Long = 0 // When the timer was started
     private lateinit var updateTimerRunnable: Runnable
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
@@ -48,7 +50,7 @@ class EntryTimerActivity : AppCompatActivity() {
         val workspaceId = intent.getStringExtra("WORKSPACE_ID")
         val projectName = intent.getStringExtra("PROJECT_NAME")
         val entryName = intent.getStringExtra("ENTRY_NAME")
-        val elapsedTimeString = intent.getStringExtra("TIME_ELAPSED").toString()
+        val elapsedTimeString = intent.getStringExtra("TIME_ELAPSED") ?: "00:00:00"
         elapsedTime = convertTimeStringToMillis(elapsedTimeString)  // Convert string to milliseconds
 
         // Set the project and entry name
@@ -162,11 +164,12 @@ class EntryTimerActivity : AppCompatActivity() {
 
     private fun startTimer() {
         isRunning = true
+        startTime = SystemClock.elapsedRealtime() - elapsedTime
         ibPausePlay.setImageResource(R.drawable.pause_circle) // Set to pause icon when running
 
         updateTimerRunnable = object : Runnable {
             override fun run() {
-                elapsedTime += 1000 // Increment by 1 second
+                elapsedTime = SystemClock.elapsedRealtime() - startTime
                 updateTimerText()
                 handler.postDelayed(this, 1000) // Update every second
             }
@@ -177,6 +180,7 @@ class EntryTimerActivity : AppCompatActivity() {
 
     private fun pauseTimer() {
         handler.removeCallbacks(updateTimerRunnable)
+        elapsedTime = SystemClock.elapsedRealtime() - startTime
         isRunning = false
         ibPausePlay.setImageResource(R.drawable.play_circle_v2) // Set to play icon when paused
     }
