@@ -2,50 +2,52 @@ package com.mobdeve.s11.santos.andreali.everhourprototype
 
 import android.app.Dialog
 import android.os.Bundle
-import androidx.appcompat.app.AlertDialog
+import android.view.LayoutInflater
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import com.mobdeve.s11.santos.andreali.everhourprototype.databinding.ProjectDeleteOlBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
 class DeleteProjectDialogFragment(
-    private val workspaceId: String, // Add workspaceId parameter
-    private val projectId: String
+    private val workspaceId: String,
+    private val projectId: String,
+    private val onProjectDeletedListener: () -> Unit // Use a callback function
 ) : DialogFragment() {
 
-    interface OnProjectDeletedListener {
-        fun onProjectDeleted()
-    }
-
-    private var listener: OnProjectDeletedListener? = null
-
-    fun setOnProjectDeletedListener(listener: OnProjectDeletedListener) {
-        this.listener = listener
-    }
+    private lateinit var binding: ProjectDeleteOlBinding
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return AlertDialog.Builder(requireContext())
-            .setTitle("Delete Project")
-            .setMessage("Are you sure you want to delete this project?")
-            .setPositiveButton("Delete") { _, _ ->
-                deleteProject()
-            }
-            .setNegativeButton("Cancel", null)
-            .create()
+        binding = ProjectDeleteOlBinding.inflate(LayoutInflater.from(context))
+        val dialog = Dialog(requireContext()).apply {
+            setContentView(binding.root)
+        }
+
+        // Handle button clicks
+        binding.btnDelete.setOnClickListener {
+            deleteProject()
+        }
+
+        binding.btnCancel.setOnClickListener {
+            dismiss()
+        }
+
+        return dialog
     }
 
     private fun deleteProject() {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: run {
-            // Handle case where userId is not available
-            return
-        }
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
 
         val dbRef = FirebaseDatabase.getInstance().reference
-        dbRef.child("workspaces").child(userId).child(workspaceId).child("projects").child(projectId).removeValue()
+        dbRef.child("workspaces").child(workspaceId).child("projects").child(projectId).removeValue()
             .addOnSuccessListener {
-                listener?.onProjectDeleted()
+                // Notify that the project has been deleted
+                onProjectDeletedListener()
+                dismiss()
             }
             .addOnFailureListener {
-                // Handle failure
+                // Handle failure, possibly show a message to the user
+                Toast.makeText(requireContext(), "Failed to delete project. Please try again.", Toast.LENGTH_SHORT).show()
             }
     }
 }

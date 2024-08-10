@@ -3,8 +3,13 @@ package com.mobdeve.s11.santos.andreali.everhourprototype
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.ViewGroup
+import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.database.FirebaseDatabase
 import com.mobdeve.s11.santos.andreali.everhourprototype.Projects.ProjectsActivity
 import com.mobdeve.s11.santos.andreali.everhourprototype.databinding.ProjectCardBinding
 
@@ -39,7 +44,6 @@ class ProjectAdapter(
             binding.tvProjectName.text = project.name
             binding.tvRoleIC.text = project.roleIC
 
-            // Handle click event for the card to navigate to ProjectDetailsActivity
             itemView.setOnClickListener {
                 val intent = Intent(context, ProjectDetailsActivity::class.java).apply {
                     putExtra("PROJECT_ID", project.projectID)
@@ -48,18 +52,51 @@ class ProjectAdapter(
                 context.startActivity(intent)
             }
 
-            // Handle the click event for the dots (options menu)
             binding.ivDots.setOnClickListener {
-                val dialog = DeleteProjectDialogFragment(workspaceId, project.projectID)
-                dialog.setOnProjectDeletedListener(object : DeleteProjectDialogFragment.OnProjectDeletedListener {
-                    override fun onProjectDeleted() {
-                        // Refresh projects after deletion
-                        (context as ProjectsActivity).fetchProjects()
+                val popupMenu = PopupMenu(context, binding.ivDots)
+                val inflater = popupMenu.menuInflater
+                inflater.inflate(R.menu.project_card_menu, popupMenu.menu)
+
+                popupMenu.setOnMenuItemClickListener { item ->
+                    when (item.itemId) {
+                        R.id.action_update -> {
+                            val updateDialog = ProjectUpdateDialogFragment(project) { updatedProject ->
+                                updateProjectInFirebase(updatedProject)
+                            }
+                            updateDialog.show(supportFragmentManager, "ProjectUpdateDialog")
+                            true
+                        }
+                        R.id.action_delete -> {
+                            val deleteDialog = DeleteProjectDialogFragment(workspaceId, project.projectID) {
+                                (context as ProjectsActivity).fetchProjects()
+                            }
+                            deleteDialog.show(supportFragmentManager, "DeleteProjectDialog")
+                            true
+                        }
+                        else -> false
                     }
-                })
-                dialog.show(supportFragmentManager, "DeleteProjectDialog")
+                }
+
+                popupMenu.show()
             }
+
         }
+
+
+
+        private fun updateProjectInFirebase(updatedProject: Project) {
+            val dbRef = FirebaseDatabase.getInstance().reference
+
+            // Correct path to update the project
+            dbRef.child("workspaces").child(workspaceId).child("projects").child(updatedProject.projectID).setValue(updatedProject)
+                .addOnSuccessListener {
+                    (context as ProjectsActivity).fetchProjects() // Refresh the project list after update
+                }
+                .addOnFailureListener {
+                    Toast.makeText(context, "Failed to update project. Please try again.", Toast.LENGTH_SHORT).show()
+                }
+        }
+
     }
 }
 
