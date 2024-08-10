@@ -35,11 +35,11 @@ class WorkspaceCreateActivity : AppCompatActivity() {
 
                 dbRef.child("workspaces").child(workspaceId).setValue(workspace)
                     .addOnSuccessListener {
-                        setResult(Activity.RESULT_OK)
-                        finish()
+                        setResult(Activity.RESULT_OK) // Set result code here
+                        finish() // Finish activity and remove from back stack
                     }
                     .addOnFailureListener {
-                        // Handle failure
+                        // Handle failure, possibly show a Toast or error message
                     }
             }
         }

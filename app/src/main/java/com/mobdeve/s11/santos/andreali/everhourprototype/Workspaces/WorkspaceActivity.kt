@@ -34,6 +34,7 @@ class WorkspaceActivity : AppCompatActivity() {
                 putExtra("WORKSPACE_NAME", workspace.name) // Pass the workspace name
             }
             startActivity(intent)
+            finish()
         }
         binding.rvWorkspaces.adapter = workspaceAdapter
 

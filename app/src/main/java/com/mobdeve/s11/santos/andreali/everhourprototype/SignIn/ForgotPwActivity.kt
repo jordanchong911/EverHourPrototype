@@ -1,5 +1,6 @@
 package com.mobdeve.s11.santos.andreali.everhourprototype.SignIn
 
+import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
@@ -61,6 +62,8 @@ class ForgotPwActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(this, "Reset link sent to your email", Toast.LENGTH_LONG).show()
+                    setResult(Activity.RESULT_OK) // Set result code here
+                    finish() // Finish activity and remove from back stack
                 } else {
                     Toast.makeText(this, "Unable to send reset mail", Toast.LENGTH_LONG).show()
                 }

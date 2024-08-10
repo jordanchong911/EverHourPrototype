@@ -63,6 +63,7 @@ class ProjectDetailsActivity : AppCompatActivity() {
                 putExtra("PROJECT_NAME", binding.tvProjectDetails.text.toString())
             }
             startActivity(intent)
+            finish()
         }
     }
 
