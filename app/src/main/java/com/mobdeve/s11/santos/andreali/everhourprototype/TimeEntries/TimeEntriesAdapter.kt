@@ -84,7 +84,6 @@ class TimeEntriesAdapter(
                 putExtra("TIME_ELAPSED", timeEntry.timeElapsed)
             }
             context.startActivity(intent)
-            finish()
         }
 
         private fun updateTimeEntryInFirebase(timeEntry: TimeEntry) {
